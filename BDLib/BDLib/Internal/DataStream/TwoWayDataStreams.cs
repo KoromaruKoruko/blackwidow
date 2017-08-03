@@ -25,11 +25,17 @@ namespace BDLib.Internal.DataStream
 
         private static uint GenID()
         {
-            byte[] ID = new byte[4];
-            IDGEN.NextBytes(ID);
-            UInt32 uint_ID = BitConverter.ToUInt32(ID, 0);
+            UInt32 uint_ID = 0;
+            while (true)
+            {
+                byte[] ID = new byte[4];
+                IDGEN.NextBytes(ID);
+                uint_ID = BitConverter.ToUInt32(ID, 0);
 
-            //TODO :: make sure id doesnt Exist (only have to do StreamID not PointID)
+                SearchID = uint_ID;
+                if (Streams.FindIndex(new Predicate<TwoWayStream>(FindByID)) > 0) break;
+
+            }
             return uint_ID;
         }
 
