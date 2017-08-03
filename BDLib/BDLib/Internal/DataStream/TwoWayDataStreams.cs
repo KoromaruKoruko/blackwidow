@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BDLib.Internal.DataStream
 {
-    public static class TwoWayDataStreams
+    public static class TwoWayDataStream
     {
         private static List<TwoWayStream> Streams;
         private static Random IDGEN = new Random();
