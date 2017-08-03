@@ -80,6 +80,7 @@
     <Compile Include="Internal\DataStream\TwoWayDataStreams.cs" />
     <Compile Include="Net\Http\HttpServer.cs" />
     <Compile Include="Net\Sockets.cs" />
+    <Compile Include="Net\TcpClientAsync.cs" />
     <Compile Include="NeuralNetworks\Learning\BackProb.cs" />
     <Compile Include="NeuralNetworks\Learning\SOMLearning.cs" />
     <Compile Include="NeuralNetworks\NeuralNetwork.cs" />
