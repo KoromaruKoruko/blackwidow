@@ -73,6 +73,7 @@
     <Compile Include="Crypto\AES.cs" />
     <Compile Include="Crypto\OneKeyHasher.cs" />
     <Compile Include="DataBase\SqliteDataBase.cs" />
+    <Compile Include="DataTypes\DynamicInt.cs" />
     <Compile Include="Internal\Chat\InternalAlerts.cs" />
     <Compile Include="Internal\Chat\InternalChat.cs" />
     <Compile Include="Internal\CommandLine\DynamicCMD.cs" />
