@@ -14,47 +14,34 @@ namespace BDLib.DataTypes
         {
             if (SizeInBytes % 2 != 0)
                 throw new ArgumentException("Size must be divisable by 2");
+            if (SizeInBytes < 4)
+                throw new ArgumentException("Size must be grater than Int");
 
             Data = new byte[SizeInBytes];
             SignPos = SizeInBytes / 2;
         }
+        private DynamicInt(byte[] PreData)
+        {
+            if (PreData.Length % 2 != 0)
+                throw new ArgumentException("Size must be divisable by 2");
+            if (PreData.Length < 4)
+                throw new ArgumentException("Size must be grater than Int");
+
+            Data = PreData;
+            SignPos = (uint)PreData.Length / 2;
+        }
+
 
         //open operations
-        public void Add(Int64 Number)
+        public void Add(uint Number)
         {
             byte[] buf = BitConverter.GetBytes(Number);
-            byte[] Lower = new byte[4];
-            byte[] Upper = new byte[4];
-            Array.Copy(buf, Lower, 4);
-            Array.Copy(buf, 4, Upper, 0, 4);
-            bool isMinus = true;
-
-            foreach (byte b in Upper)
-                if (b > 0)
-                    isMinus = false;
-
-            if (isMinus)
-                mins(ToME(Lower,true));
-            else
-                add(ToME(Upper,false));
+            Data = add(ToME(buf,false)).Data;
         }
-        public void TakeAway(Int64 Number)
+        public void TakeAway(uint Number)
         {
             byte[] buf = BitConverter.GetBytes(Number);
-            byte[] Lower = new byte[4];
-            byte[] Upper = new byte[4];
-            Array.Copy(buf, Lower, 4);
-            Array.Copy(buf, 4, Upper, 0, 4);
-            bool isMinus = true;
-
-            foreach (byte b in Upper)
-                if (b > 0)
-                    isMinus = false;
-
-            if (isMinus)
-                mins(ToME(Upper, false));
-            else
-                add(ToME(Lower, true));
+            Data = mins(ToME(buf, false)).Data;
         }
 
         //inner workings
@@ -65,11 +52,15 @@ namespace BDLib.DataTypes
             Array.Copy(x, 0, f, (isNeg) ? 0 : SignPos, 4);
             return f;
         }
-        private void   IsME(bool[] x)
+        private DynamicInt ToMe(bool[] x)
         {
-            (new BitArray(x)).CopyTo(Data,0);
+            byte[] f = new byte[(x.Length / 8)];
+            (new BitArray(x)).CopyTo(f, 0);
+            return new DynamicInt(f);
+
         }
-        private void add(byte[] x)
+
+        private DynamicInt add(byte[] x)
         {
             //x is Data.length ie this Ints Size
             bool carry = false;
@@ -80,16 +71,21 @@ namespace BDLib.DataTypes
                 for (int y = 0; y < 8; y++)
                 {
                     bool X_bit  = (x[c] & (1 << y)) != 0;
-                    bool MY_bit = ((Data[SignPos + c] & (1 << y)) != 0);
+                    bool MY_bit = ((Data[c] & (1 << y)) != 0);
                     int f = 0;
 
                     if (MY_bit) f++;
                     if (X_bit) f++;
-                    if (MY_bit) f++;
+                    if (carry) f++;
                     bool output = false;
 
                     switch(f)
                     {
+                        case (0):
+                            output = false;
+                            carry = false;
+                            break;
+
                         case(1):
                             output = true;
                             carry = false;
@@ -114,17 +110,75 @@ namespace BDLib.DataTypes
             if (carry)
                 throw new OverflowException();
 
-            IsME(outputs);
+            return ToMe(outputs);
         }
-        private void mins(byte[] x)
+        private DynamicInt mins(byte[] x)
         {
-            //x is Data.length ie this Ints Size
-            throw new NotImplementedException("comming soon, as soon as i can figure out a way to do it in code");
+            throw new NotImplementedException("comming soon");
             bool[] outputs = new bool[Data.Length * 8];
+            bool carry = false;
 
-            //CODE
+            for (int c = Data.Length-1; c > 0; c--)
+            {
+                for (int y = 7; y > 0; y--)
+                {
+                    bool X_bit = (x[c] & (1 << y)) != 0;
+                    bool MY_bit = ((Data[c] & (1 << y)) != 0);
+                    int f = 0;
 
-            IsME(outputs);
+                    if (MY_bit) f++;
+                    if (X_bit) f++;
+                    if (carry) f++;
+                    bool output = false;
+
+                    switch (f)
+                    {
+                        case (0):
+                            output = false;
+                            carry = false;
+                            break;
+
+                        case (1):
+                            if (X_bit)
+                            {
+                                output = false;
+                                carry = true;
+                            }
+                            else if(MY_bit)
+                            {
+                                output = true;
+                                carry = false;
+                            }
+                            else if(carry && c<SignPos)
+                            {
+                                carry = false;
+                                output = true;
+                            }
+                            break;
+
+                        case (2):
+                            if (carry && MY_bit)
+                                output = false;
+                            else
+                                output = true;
+                            carry = false;
+                            break;
+
+                        case (3):
+                            output = false;
+                            carry = true;
+                            break;
+
+                        default:
+                            throw new Exception("WTF happend??");
+                    }
+                    outputs[(c * 8) + y] = output;
+                }
+            }
+            if (carry)
+                throw new OverflowException();
+            
+            return ToMe(outputs);
         }
 
         //overrides
@@ -146,24 +200,26 @@ namespace BDLib.DataTypes
         //operators
         public static DynamicInt operator +(DynamicInt a, DynamicInt b)
         {
-            a.add(b.Data);
-            return a;
+            return a.add(b.Data);
         }
         public static DynamicInt operator -(DynamicInt a, DynamicInt b)
         {
-            a.mins(b.Data);
-            return a;
+            return a.mins(b.Data);
         }
 
         public static DynamicInt operator +(DynamicInt a, Int64 b)
         {
-            a.Add(b);
-            return a;
+            if (b < 0)
+                return a.mins(a.ToME(BitConverter.GetBytes(-b), true));
+            else
+                return a.add(a.ToME(BitConverter.GetBytes(b), false));
         }
         public static DynamicInt operator -(DynamicInt a, Int64 b)
         {
-            a.TakeAway(b);
-            return a;
+            if (b > 0)
+                return a.mins(a.ToME(BitConverter.GetBytes(-b), true));
+            else
+                return a.add(a.ToME(BitConverter.GetBytes(b), false));
         }
 
         public static bool       operator <(DynamicInt a, DynamicInt b)
