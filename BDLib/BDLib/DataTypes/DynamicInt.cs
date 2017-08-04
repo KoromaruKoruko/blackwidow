@@ -35,13 +35,26 @@ namespace BDLib.DataTypes
         //open operations
         public void Add(uint Number)
         {
-            byte[] buf = BitConverter.GetBytes(Number);
-            Data = add(ToME(buf,false)).Data;
+            Data = (this + Number).Data;
         }
         public void TakeAway(uint Number)
         {
-            byte[] buf = BitConverter.GetBytes(Number);
-            Data = mins(ToME(buf, false)).Data;
+            Data = (this - Number).Data;
+        }
+        public void Add(DynamicInt Number)
+        {
+            Data = (this + Number).Data;
+        }
+        public void TakeAway(DynamicInt Number)
+        {
+            Data = (this - Number).Data;
+        }
+        public void Set(Int32 Number)
+        {
+            if (Number > 0)
+                Data = ToME(BitConverter.GetBytes(Number), false);
+            else
+                Data = ToME(BitConverter.GetBytes((-Number)), true);
         }
 
         //inner workings
@@ -232,6 +245,7 @@ namespace BDLib.DataTypes
 
             return ToME(outputs);
         }
+        
 
         //overrides
         public override string ToString()
@@ -274,6 +288,21 @@ namespace BDLib.DataTypes
             else if (b < 0)
                 return a.add(a.ToME(BitConverter.GetBytes((-b)), false));
             else return a;
+        }
+
+        public static DynamicInt operator +(DynamicInt a, uint b)
+        {
+            if (b != 0)
+                return a.add(a.ToME(BitConverter.GetBytes(b), false));
+            else
+                return a;
+        }
+        public static DynamicInt operator -(DynamicInt a, uint b)
+        {
+            if (b != 0)
+                return a.mins(a.ToME(BitConverter.GetBytes(b), false));
+            else
+                return a;
         }
 
         public static bool       operator <(DynamicInt a, DynamicInt b)
@@ -320,3 +349,4 @@ namespace BDLib.DataTypes
         }
     }
 }
+
