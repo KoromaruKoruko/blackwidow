@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
+
+//WindowsOnly
+
+
 
 namespace BDLib.Reg
 {
@@ -22,7 +21,7 @@ namespace BDLib.Reg
         public static bool Exists (string Key,string ValueName)
         {
 
-            if (Registry.GetValue(Key, ValueName, "NOVALUE") == "NOVALUE")
+            if (Registry.GetValue(Key, ValueName, "NOVALUE") == "NOVALUE")//its fine
                 return false;
             else
                 return true;

@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 
 namespace BDLib.DataTypes
@@ -349,4 +349,3 @@ namespace BDLib.DataTypes
         }
     }
 }
-

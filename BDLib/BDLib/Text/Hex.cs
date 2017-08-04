@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 
 namespace BDLib.Text
@@ -8,8 +8,8 @@ namespace BDLib.Text
         public static string ToHEX(byte[] x)
         {
             return BitConverter.ToString(x)
-                               .Replace("-", "")
-                               .ToLower();
+                                .Replace("-", "")
+                                .ToLower();
         }
         public static byte[] ToBytes(string hex)
         {
