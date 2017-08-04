@@ -9,206 +9,108 @@ namespace BDLib.Internal.CommandLine
         public string[] CommandAlias;
     }
 
-    public delegate void DynamicCommandFunction(object s,string[] Args);
+    public delegate void DynamicCommandFunction(object[] Args);
 
 
     //for external cmd IE all can access without ref of commandline
     public static class OpenDynamicCMD
     {
-        private static List<DynamicCommand> Commands = new List<DynamicCommand>();
+        private static Dictionary<string, DynamicCommandFunction> Commands = new Dictionary<string, DynamicCommandFunction>();
 
-        public static string CmdList()
+        public static Dictionary<string,DynamicCommandFunction>.KeyCollection CmdList()
         {
-            string output = "";
-
-            for (int x = 0; x < Commands.Count; x++)
-            {
-                output += "{ " + Commands[x].CommandAlias[0];
-
-                for (int y = 1; y < Commands[x].CommandAlias.Length; y++)
-                    output += ", " + Commands[x].CommandAlias[y];
-
-                output += "},";
-            }
-
-            return output;
+            return Commands.Keys;
         }
-        public static int ExecuteCommand(string x, string[] Args)
+        public static bool ExecuteCommand(string x, object[] Args)
         {
-            bool FindByString(DynamicCommand input)
-            {
-                for (int y = 0; y < input.CommandAlias.Length; y++)
-                    if (input.CommandAlias[y] == x)
-                        return true;
-
-                return false;
-            }
-
-            int index = Commands.FindIndex(new Predicate<DynamicCommand>(FindByString));
-            if (index > 0)
-            {
-                try {
-                    Commands[index].Command.Invoke(null, Args);
-                    return 0;
-                }
-                catch {
-                    return 2;
-                }
-            }
-            else
-                return 1;
-        }
-
-        public static bool CreateCommand(DynamicCommandFunction Func, string[] Aliases)
-        {
-            DynamicCommand newCom = new DynamicCommand();
-            try {
-                newCom.Command = new EventHandler<string[]>(Func);
-                newCom.CommandAlias = Aliases;
-            }
-            catch {
-                return false;
-            }
-
-            for (int x = 0; x < Aliases.Length; x++)
-                for (int y = 0; y < Commands.Count; y++)
-                    for (int z = 0; z < Commands[y].CommandAlias.Length; z++)
-                    {
-                        if (Commands[y].CommandAlias[z] == Aliases[x])
-                            return false;
-                    }
-            //if your at this point there inst an Alies that all-ready exists
-
-            Commands.Add(newCom);
-
-            return true;
-        }
-        public static bool CreateCommand(DynamicCommandFunction Func, string Alias)
-        {
-            DynamicCommand newCom = new DynamicCommand();
             try
             {
-                newCom.Command = new EventHandler<string[]>(Func);
-                newCom.CommandAlias = new string[] { Alias };
+                Commands[x].Invoke(Args);
+
+                return true;
             }
             catch
             {
                 return false;
             }
+        }
 
-            for (int y = 0; y < Commands.Count; y++)
-                for (int z = 0; z < Commands[y].CommandAlias.Length; z++)
-                {
-                    if (Commands[y].CommandAlias[z] == Alias)
-                        return false;
-                }
-            //if your at this point there inst an Alies that all-ready exists
+        public static bool CreateCommand(DynamicCommandFunction Func, string[] Aliases)
+        {
+            for (int x = 0; x < Aliases.Length; x++)
+            {
+                if (Commands.ContainsKey(Aliases[x])) return false;
+            }
 
-            Commands.Add(newCom);
+            for(int x = 0; x < Aliases.Length; x++)
+            {
+                Commands.Add(Aliases[x], Func);
+            }
 
             return true;
+        }
+        public static bool CreateCommand(DynamicCommandFunction Func, string Alias)
+        {
+            try
+            {
+                Commands.Add(Alias, Func);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 
     //for internal cmd IE req access to ref of commandline
     public class ClosedDynamicCMD
     {
-        private List<DynamicCommand> Commands = new List<DynamicCommand>();
+        private Dictionary<string, DynamicCommandFunction> Commands = new Dictionary<string, DynamicCommandFunction>();
 
-        public string CmdList()
+        public Dictionary<string, DynamicCommandFunction>.KeyCollection CmdList()
         {
-            string output = "";
-
-            for (int x = 0; x < Commands.Count; x++)
-            {
-                output += "{ " + Commands[x].CommandAlias[0];
-
-                for (int y = 1; y < Commands[x].CommandAlias.Length; y++)
-                    output += ", " + Commands[x].CommandAlias[y];
-
-                output += "},";
-            }
-
-            return output;
+            return Commands.Keys;
         }
-        public int ExecuteCommand(string x, string[] Args)
+        public bool ExecuteCommand(string x, object[] Args)
         {
-            bool FindByString(DynamicCommand input)
-            {
-                for (int y = 0; y < input.CommandAlias.Length; y++)
-                    if (input.CommandAlias[y] == x)
-                        return true;
-
-                return false;
-            }
-
-            int index = Commands.FindIndex(new Predicate<DynamicCommand>(FindByString));
-            if (index > 0)
-            {
-                try
-                {
-                    Commands[index].Command.Invoke(null, Args);
-                    return 0;
-                }
-                catch
-                {
-                    return 2;
-                }
-            }
-            else
-                return 1;
-        }
-
-        public bool CreateCommand(DynamicCommandFunction Func, string[] Aliases)
-        {
-            DynamicCommand newCom = new DynamicCommand();
             try
             {
-                newCom.Command = new EventHandler<string[]>(Func);
-                newCom.CommandAlias = Aliases;
+                Commands[x].Invoke(Args);
+
+                return true;
             }
             catch
             {
                 return false;
             }
+        }
+
+        public bool CreateCommand(DynamicCommandFunction Func, string[] Aliases)
+        {
+            for (int x = 0; x < Aliases.Length; x++)
+            {
+                if (Commands.ContainsKey(Aliases[x])) return false;
+            }
 
             for (int x = 0; x < Aliases.Length; x++)
-                for (int y = 0; y < Commands.Count; y++)
-                    for (int z = 0; z < Commands[y].CommandAlias.Length; z++)
-                    {
-                        if (Commands[y].CommandAlias[z] == Aliases[x])
-                            return false;
-                    }
-            //if your at this point there inst an Alies that all-ready exists
-
-            Commands.Add(newCom);
+            {
+                Commands.Add(Aliases[x], Func);
+            }
 
             return true;
         }
         public bool CreateCommand(DynamicCommandFunction Func, string Alias)
         {
-            DynamicCommand newCom = new DynamicCommand();
             try
             {
-                newCom.Command = new EventHandler<string[]>(Func);
-                newCom.CommandAlias = new string[] { Alias };
+                Commands.Add(Alias, Func);
+                return true;
             }
             catch
             {
                 return false;
             }
-
-            for (int y = 0; y < Commands.Count; y++)
-                for (int z = 0; z < Commands[y].CommandAlias.Length; z++)
-                {
-                    if (Commands[y].CommandAlias[z] == Alias)
-                        return false;
-                }
-            //if your at this point there inst an Alies that all-ready exists
-
-            Commands.Add(newCom);
-
-            return true;
         }
     }
 }
