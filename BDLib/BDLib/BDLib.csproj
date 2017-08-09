@@ -87,6 +87,7 @@
     <Compile Include="NeuralNetworks\NeuralNetwork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reg\Regedit.cs" />
+    <Compile Include="Resorces\ResorceManager.cs" />
     <Compile Include="Text\Hex.cs" />
     <Compile Include="Text\StringHelpers.cs" />
   </ItemGroup>

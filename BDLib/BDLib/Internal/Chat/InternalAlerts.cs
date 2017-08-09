@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace BDLib.Internal.Chat
 {
+
+    //TODO Make sure this works
+
     public static class InternalAlerts
     {
         private static Dictionary<string,EventHandler<InternalAlertEventArgs>> Events = new Dictionary<string,EventHandler<InternalAlertEventArgs>>();

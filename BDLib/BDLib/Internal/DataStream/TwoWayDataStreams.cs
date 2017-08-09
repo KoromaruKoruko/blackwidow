@@ -5,7 +5,7 @@ namespace BDLib.Internal.DataStream
 {
     public static class TwoWayDataStream
     {
-        private static Dictionary<UInt32, TwoWayStream> Streams;
+        private static Dictionary<UInt32, TwoWayStream> Streams = new Dictionary<uint, TwoWayStream>();
         private static Random IDGEN = new Random();
 
 
