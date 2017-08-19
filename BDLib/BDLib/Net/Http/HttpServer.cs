@@ -143,8 +143,9 @@ namespace BDLib.Net.Http
         {
             if (THR.IsAlive)
                 throw new InvalidOperationException("this must be run beffore you start listening");//stupid coder -_-
-
-            if (IPAddress.TryParse(ip, out IPAddress x))
+                
+            IPAddress x;
+            if (IPAddress.TryParse(ip, out x))
             {
                 Lis[0] = new TcpListener(x, 80);
                 Lis[1] = new TcpListener(x, 8080);//set endpoint
