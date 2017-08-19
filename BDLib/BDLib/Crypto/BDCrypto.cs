@@ -7,7 +7,7 @@ using System;
 
 namespace BDLib.Crypto
 {
-    public class SpecialBDCrypto
+    public class BDCrypto
     {
 
         private Dictionary<byte,byte> Encryption;
@@ -15,7 +15,7 @@ namespace BDLib.Crypto
         private byte[] _Key;
 
 
-        public SpecialBDCrypto(string Password)
+        public BDCrypto(string Password)
         {
             OneKeyHasher Translator = new OneKeyHasher();
 
@@ -66,13 +66,13 @@ namespace BDLib.Crypto
                 }
             }
 
-            Key = new byte[256];
+            _Key = new byte[256];
             Layers = 5;
 
             byte x = 0;
             while (true)
             {
-                Key[x] = Encryption[x];
+                _Key[x] = Encryption[x];
                 if (x == 255)
                     break;
                 else
@@ -80,7 +80,7 @@ namespace BDLib.Crypto
             }
             
         }
-        public SpecialBDCrypto(byte[] KEY)
+        public BDCrypto(byte[] KEY)
         {
             if (KEY.Length != 256)
                 throw new ArgumentException("Key must support 0-255 Ie Length must be 256");

@@ -9,15 +9,17 @@ namespace BDLib.Text
         private static bool _LogActive;
         private static LogType _LogLevel;
         private static int _TimeLength = 0;
+        private static bool _OutputToConsole;
 
-        public static void INIT(string LogName, LogType LogLevel, string OutputFolder = "\\")
+        public static void INIT(string LogName, LogType LogLevel,bool OutputToConsole = false, string OutputFolder = "")
         {
-            if (!Directory.Exists(OutputFolder))
+            if (!StringHelpers.IsWhiteSpaceOrNull(OutputFolder) && !Directory.Exists(OutputFolder))
                 Directory.CreateDirectory(OutputFolder);
 
-            _LOG = new StreamWriter(new FileStream($"{OutputFolder}{DateTime.Today.ToShortDateString()}-{DateTime.Now.ToShortTimeString().Replace(":",".")}-{LogName}.BDLog", FileMode.CreateNew));
+            _LOG = new StreamWriter(new FileStream($"{OutputFolder}{DateTime.Today.ToShortDateString()}-{DateTime.Now.ToShortTimeString().Replace(":",".")}-{LogName}.BDLog", FileMode.Create));
             _LogLevel = LogLevel;
             _LogActive = true;
+            _OutputToConsole = OutputToConsole;
         }
         public static void EndLog()
         {
@@ -31,16 +33,25 @@ namespace BDLib.Text
         {
             if (FORMAT_Verify_LogType(Type) && _LogActive)
             {
-                _LOG.WriteLine($"{FORMAT_LogType(Type)}{FORMAT_Time()}{message}");
+                string m = $"{FORMAT_LogType(Type)}{FORMAT_Time()}{message}";
+                if (_OutputToConsole)
+                    Console.WriteLine(m);
+                _LOG.WriteLine(m);
             }
         }
         public static void LogWithSubLines(string message, string[] SubLines, LogType Type)
         {
             if(FORMAT_Verify_LogType(Type) && _LogActive)
             {
-                _LOG.WriteLine($"{FORMAT_LogType(Type)}{FORMAT_Time()}{message}");
+                string m = $"{FORMAT_LogType(Type)}{FORMAT_Time()}{message}";
+                if (_OutputToConsole)
+                    Console.WriteLine(m);
+                _LOG.WriteLine(m);
                 for(int x = 0; x < SubLines.Length; x++)
                 {
+                    m = $"        +{SubLines[x]}";
+                    if (_OutputToConsole)
+                        Console.WriteLine(m);
                     _LOG.WriteLine($"        +{SubLines[x]}");
                 }
             }

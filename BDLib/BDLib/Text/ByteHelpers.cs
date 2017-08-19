@@ -32,5 +32,25 @@ namespace BDLib.Text
             199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
             221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242,
             243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254 };//steps one byte down (with out the missing number of using %)
+
+        public static bool AreTheSame(byte[] a, byte[] b)
+        {
+            bool output = true;
+
+            if (a.Length != b.Length)
+                output = false;
+            else
+                for (int x = 0; x < a.Length; x++)
+                {
+                    if (a[x] != b[x])
+                    {
+
+                        output = false;
+                        break;
+                    }
+                }
+
+            return output;
+        }
     }
 }

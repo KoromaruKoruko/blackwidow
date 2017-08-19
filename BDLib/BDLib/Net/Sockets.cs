@@ -53,7 +53,7 @@ namespace BDLib.Net.IPv4
         }
         public static Socket BlackNet
         {
-            get { return new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.Raw); }
+            get { return new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP); }
         }
     }
 }
@@ -71,7 +71,7 @@ namespace BDLib.Net.IPv6
         }
         public static Socket BlackNet
         {
-            get { return new Socket(AddressFamily.InterNetworkV6, SocketType.Raw, ProtocolType.Raw); }
+            get { return new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.IP); }
         }
     }
 }

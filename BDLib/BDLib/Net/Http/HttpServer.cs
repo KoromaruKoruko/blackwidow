@@ -143,7 +143,6 @@ namespace BDLib.Net.Http
         {
             if (THR.IsAlive)
                 throw new InvalidOperationException("this must be run beffore you start listening");//stupid coder -_-
-                
             IPAddress x;
             if (IPAddress.TryParse(ip, out x))
             {
