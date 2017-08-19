@@ -97,11 +97,12 @@ namespace BDLib.Net.Http
         public HttpStatusCodes StatusCode;
         public string[] Headers;
         public byte[] Data;
+        public string DataType;
     }
 
     public delegate void HttpConAcceptEvent(object sender, HttpConnection NewCon);
 
-    class HttpServer : IDisposable
+    public class HttpServer : IDisposable
     {
         //settings
         public bool AutoClose = false;
@@ -135,6 +136,7 @@ namespace BDLib.Net.Http
             Running = false;
             FirstRun = true;
             Socs = new HttpConnection[20];
+            THR = new Thread(new ThreadStart(ListenThread));
         }
 
         public void Bind(string ip)
@@ -157,6 +159,7 @@ namespace BDLib.Net.Http
         {
             if (!THR.IsAlive)
             {
+                Socs = new HttpConnection[Backlog];
                 Running = true;
                 if (FirstRun)
                 {
@@ -173,7 +176,7 @@ namespace BDLib.Net.Http
             Running = false;
         }
 
-        private int ListenThread()
+        private void ListenThread()
         {
             do//run thread for port 80
             {
@@ -189,26 +192,31 @@ namespace BDLib.Net.Http
 
             while (Running) Thread.Sleep(100);//wait till Running is false
             //IE wait till 'Stop' is ran
-
-            return 1;
         }
 
         public void Response(HttpConnection con, HttpResponse Res)
         {
             string output = "";
-            output+= GetStatusCode(Res.StatusCode)+"\r\n";
+            output+= "HTTP/1.1 "+GetStatusCode(Res.StatusCode)+"\r\n";
+            if(Res.Headers.Length > 0)
+                for (int x = 0; x < Res.Headers.Length; x++)//        join headers together
+                    output+= Res.Headers[x]+"\r\n";
 
-            for (int x = 0; x < Res.Headers.Length; x++)//        join headers together
-                 output+= Res.Headers[x]+"\r\n";
+            output += $"Date: {DateTime.Today.ToShortDateString()} - {DateTime.Now.ToShortTimeString()}\r\n"+
+                      $"Server: BDServer\r\n"+
+                      $"Content-Length: {Res.Data.Length}\r\n"+
+                      $"Connection: Closed\r\n"+
+                      $"Content-Type: {Res.DataType}\r\n";
+
 
             output += "\r\n";
 
             byte[] Data = new byte[ResponseEncoding.GetByteCount(output) + Res.Data.Length];//create new container
 
-            Data.CopyTo(ResponseEncoding.GetBytes(output), 0);//combine data together
-            Data.CopyTo(Res.Data, ResponseEncoding.GetByteCount(output));//data must be sent as one for most web clients to function properly
-
-            con.Soc.Client.Send(Data);//send data
+            ResponseEncoding.GetBytes(output).CopyTo(Data, 0);//combine data together
+            Res.Data.CopyTo(Data, ResponseEncoding.GetByteCount(output));//data must be sent as one for most web clients to function properly
+            if(con.Soc.Connected)
+                con.Soc.Client.Send(Data);//send data
         }
 
         public static string GetStatusCode(HttpStatusCodes code)
@@ -432,7 +440,7 @@ namespace BDLib.Net.Http
         private void EventText(TcpListener e)
         {
             int x = GetSocket();
-            if (x > 0)
+            if (x >= 0)
             {
                 Socs[x] = new HttpConnection()
                 {
@@ -467,6 +475,7 @@ namespace BDLib.Net.Http
 
                 if (StringHelpers.IsWhiteSpaceOrNull(Socs[x]._Request))
                 {
+                    if(Socs[x].Soc.Connected)
                     Socs[x].Soc.Client.Send(ResponseEncoding.GetBytes(
                         $"HTTP/1.1 400 Bad Request/Invalid Request Format\r\nDate: {DateTime.Today}\r\nContent-Length: 0\r\nContent-Type: text/html\r\nConnection: Closed\r\n\r\n"));
                     
@@ -477,9 +486,7 @@ namespace BDLib.Net.Http
                     Socs[x].Soc = null;
                 }
                 else RequestEvent.Invoke(this, Socs[x]);
-
-                RequestEvent.Invoke(this, Socs[x]);
-                if (AutoClose)
+                if (AutoClose && Socs[x].Soc.Connected)
                     Close(Socs[x]);
 
             }

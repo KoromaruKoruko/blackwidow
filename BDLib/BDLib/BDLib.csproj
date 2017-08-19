@@ -71,7 +71,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Crypto\AES.cs" />
-    <Compile Include="Crypto\OneKeyHasher.cs" />
+    <Compile Include="Crypto\BDCrypto.cs" />
+    <Compile Include="Crypto\Hash\OneKeyHasher.cs" />
     <Compile Include="DataBase\SqliteDataBase.cs" />
     <Compile Include="DataTypes\DynamicInt.cs" />
     <Compile Include="Internal\Chat\InternalAlerts.cs" />
@@ -88,7 +89,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reg\Regedit.cs" />
     <Compile Include="Resorces\ResorceManager.cs" />
+    <Compile Include="Text\ByteHelpers.cs" />
     <Compile Include="Text\Hex.cs" />
+    <Compile Include="Text\Logger.cs" />
     <Compile Include="Text\StringHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
