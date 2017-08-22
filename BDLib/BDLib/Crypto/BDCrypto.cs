@@ -9,6 +9,8 @@ namespace BDLib.Crypto
 {
     public class BDCrypto
     {
+        public const string WARNING_MESSAGE = "this is not a secure crypto and should not be used in anything important matters";
+
 
         private Dictionary<byte,byte> Encryption;
         private Dictionary<byte,byte> Decryption;

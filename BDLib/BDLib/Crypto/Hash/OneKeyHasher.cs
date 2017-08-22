@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Text;
-
 namespace BDLib.Crypto.Hash
 {
+
     public class OneKeyHasher
     {
         private Encoding ENCODER = Encoding.ASCII;
         private int HashSize = 64;
-
+        
         public int TheHashSize
         {
             get { return HashSize;}
@@ -31,8 +31,7 @@ namespace BDLib.Crypto.Hash
                 else throw new ArgumentNullException();
             }
         }
-
-
+        
         private Int64 GetOffset(string Text)
         {
             Int64 x = 1;
@@ -46,6 +45,7 @@ namespace BDLib.Crypto.Hash
 
             return x % 1248901232;
         }
+        
         private Int64 GetOffset(byte[] Bytes)
         {
             Int64 x = 1;
@@ -58,8 +58,11 @@ namespace BDLib.Crypto.Hash
 
             return x % 1248901232;
         }
+        
         private byte Translate(UInt64 Key, UInt64 Pass, char Pk)
         {
+            
+
             byte[] Buf = new byte[8];
             UInt64 i = (((Key + Pass * 12 / 54) ^ Key)) % 8;
 
@@ -117,6 +120,7 @@ namespace BDLib.Crypto.Hash
                     return byte.Parse(deff.ToString());
             }
         }
+        
         public byte[] Hash(string Text)
         {
             Int64 Offset = GetOffset(Text);
@@ -143,6 +147,7 @@ namespace BDLib.Crypto.Hash
 
             return Output;
         }
+        
         public byte[] Hash(byte[] Bytes)
         {
             Int64 Offset = GetOffset(Bytes);

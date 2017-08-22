@@ -18,7 +18,7 @@ namespace BDLib.Crypto
         
         public AESStream(byte[] Key, byte[] VIKey, CipherMode CMode, PaddingMode PMode, bool AutoGenKey = false)
         {
-            AesManaged AesMa = new AesManaged();
+            AesMa = new AesManaged();
 
             if (Key != null && !AutoGenKey)
             {
