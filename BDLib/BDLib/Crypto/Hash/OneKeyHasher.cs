@@ -1,13 +1,20 @@
 ﻿using System;
 using System.Text;
+using BDLib.BDLibInfo;
+
 namespace BDLib.Crypto.Hash
 {
-
     public class OneKeyHasher
     {
         private Encoding ENCODER = Encoding.ASCII;
         private int HashSize = 64;
         
+        public OneKeyHasher()
+        {
+            if (!Info.Moduls.Contains("Crypto/Hash/OneKeyHasher.cs"))
+                Info.Moduls.Add("Crypto/Hash/OneKeyHasher.cs");
+        }
+
         public int TheHashSize
         {
             get { return HashSize;}

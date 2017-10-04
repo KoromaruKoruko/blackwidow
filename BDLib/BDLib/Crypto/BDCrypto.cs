@@ -4,6 +4,7 @@ using BDLib.Text;
 using System.Text;
 using System.Collections.Generic;
 using System;
+using BDLib.BDLibInfo;
 
 namespace BDLib.Crypto
 {
@@ -19,6 +20,9 @@ namespace BDLib.Crypto
 
         public BDCrypto(string Password)
         {
+            if (!Info.Moduls.Contains("Crypto/BDCrypto.cs"))
+                Info.Moduls.Add("Crypto/BDCrypto.cs");
+
             OneKeyHasher Translator = new OneKeyHasher();
 
             Encryption = new Dictionary<byte, byte>();

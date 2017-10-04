@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.IO;
+using BDLib.BDLibInfo;
 
 namespace BDLib.Crypto
 {
@@ -18,6 +19,9 @@ namespace BDLib.Crypto
         
         public AESStream(byte[] Key, byte[] VIKey, CipherMode CMode, PaddingMode PMode, bool AutoGenKey = false)
         {
+            if (!Info.Moduls.Contains("Crypto/AES.cs"))
+                Info.Moduls.Add("Crypto/AES.cs");
+
             AesMa = new AesManaged();
 
             if (Key != null && !AutoGenKey)
