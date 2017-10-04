@@ -1,6 +1,7 @@
 ﻿using AForge.Neuro.Learning;
 using AForge.Neuro;
 using BDLib.NeuralNetworks;
+using BDLib.BDLibInfo;
 
 namespace BDLib.NeuralNetworks.Learning
 {
@@ -8,7 +9,10 @@ namespace BDLib.NeuralNetworks.Learning
     {
         public NeuralNetwork Train(BackProbArgs X)
         {
-        BackPropagationLearning Trainer
+            if (!Info.Moduls.Contains("NeuralNetworks/Learning/BackProb.cs"))
+                Info.Moduls.Add("NeuralNetworks/Learning/BackProb.cs");
+
+            BackPropagationLearning Trainer
                 = new BackPropagationLearning(X.NetworkToTrain.ANetwork);
 
             Trainer.Momentum     = (X.Momentem <= 0)     ? (3)    : (X.Momentem);

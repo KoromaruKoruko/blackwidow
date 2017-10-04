@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BDLib.BDLibInfo;
 
 namespace BDLib.Internal.Chat
 {
@@ -9,6 +10,9 @@ namespace BDLib.Internal.Chat
 
         public static void Join(Action<object,InternalChatEventArgs> ReturnFunction)
         {
+            if (!Info.Moduls.Contains("Internal/Chat/InternalChat.cs"))
+                Info.Moduls.Add("Internal/Chat/InternalChat.cs");
+
             Events.Add(new EventHandler<InternalChatEventArgs>(ReturnFunction));
         }
         public static void Part(Action<object,InternalChatEventArgs> ReturnFunction)

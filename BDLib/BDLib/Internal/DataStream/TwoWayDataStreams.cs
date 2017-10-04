@@ -11,6 +11,9 @@ namespace BDLib.Internal.DataStream
 
         public static TwoWayStreamInfo RegisterStream()
         {
+            if (!BDLibInfo.Info.Moduls.Contains("Internal/DataStream/TwoWayDataStream.cs"))
+                BDLibInfo.Info.Moduls.Add("Internal/DataStream/TwoWayDataStream.cs");
+
             UInt32 StreamID = GenID();
 
             TwoWayStreamInfo Info = new TwoWayStreamInfo()

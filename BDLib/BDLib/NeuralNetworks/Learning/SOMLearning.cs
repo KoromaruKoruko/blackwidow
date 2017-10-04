@@ -1,5 +1,6 @@
 ﻿using AForge.Neuro.Learning;
 using BDLib.NeuralNetworks;
+using BDLib.BDLibInfo;
 
 namespace BDLib.NeuralNetworks.Learning
 {
@@ -7,6 +8,9 @@ namespace BDLib.NeuralNetworks.Learning
     {
         public NeuralNetwork Train(SOMTrainerArgs X)
         {
+            if (!Info.Moduls.Contains("NeuralNetworks/Learning/SOMLearnig.cs"))
+                Info.Moduls.Add("NeuralNetworks/Learning/SOMLearnig.cs");
+
             SOMLearning Trainer =
                 new SOMLearning(X.NetworkToTrain.DNetwork);
 

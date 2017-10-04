@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BDLib.BDLibInfo;
 
 namespace BDLib.Internal.CommandLine
 {
@@ -15,6 +16,12 @@ namespace BDLib.Internal.CommandLine
     //for external cmd IE all can access without ref of commandline
     public static class OpenDynamicCMD
     {
+        private static void INIT()
+        {
+            if (!Info.Moduls.Contains("Internal/CommandLine/DynamicCMD.cs"))
+                Info.Moduls.Add("Internal/CommandLine/DynamicCMD.cs");
+        }
+
         private static Dictionary<string, DynamicCommandFunction> Commands = new Dictionary<string, DynamicCommandFunction>();
 
         public static Dictionary<string,DynamicCommandFunction>.KeyCollection CmdList()
@@ -34,6 +41,11 @@ namespace BDLib.Internal.CommandLine
                 return false;
             }
         }
+        public static bool Exists(string command)
+        {
+            return Commands.ContainsKey(command);
+        }
+
 
         public static bool CreateCommand(DynamicCommandFunction Func, string[] Aliases)
         {
@@ -68,6 +80,12 @@ namespace BDLib.Internal.CommandLine
     {
         private Dictionary<string, DynamicCommandFunction> Commands = new Dictionary<string, DynamicCommandFunction>();
 
+        public ClosedDynamicCMD()
+        {
+            if (!Info.Moduls.Contains("Internal/CommandLine/DynamicCMD.cs"))
+                Info.Moduls.Add("Internal/CommandLine/DynamicCMD.cs");
+        }
+
         public Dictionary<string, DynamicCommandFunction>.KeyCollection CmdList()
         {
             return Commands.Keys;
@@ -84,6 +102,10 @@ namespace BDLib.Internal.CommandLine
             {
                 return false;
             }
+        }
+        public bool Exists(string command)
+        {
+            return Commands.ContainsKey(command);
         }
 
         public bool CreateCommand(DynamicCommandFunction Func, string[] Aliases)

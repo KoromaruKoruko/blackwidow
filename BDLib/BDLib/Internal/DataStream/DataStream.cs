@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BDLib.BDLibInfo;
 
 namespace BDLib.Internal.DataStream
 {
@@ -11,6 +12,9 @@ namespace BDLib.Internal.DataStream
 
         public static UInt32 RegisterStream()
         {
+            if (!Info.Moduls.Contains("Internal/DataStream/DataStream.cs"))
+                Info.Moduls.Add("Internal/DataStream/DataStream.cs");
+
             UInt32 uint_ID = GenID();
             Streams.Add(uint_ID, new DataStreamInfo()
             {

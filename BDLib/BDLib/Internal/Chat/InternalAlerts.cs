@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using BDLib.BDLibInfo;
 
 namespace BDLib.Internal.Chat
 {
@@ -13,6 +14,8 @@ namespace BDLib.Internal.Chat
 
         public static void Register(Action<object, InternalAlertEventArgs> AletFunction, string Name)
         {
+            if (!Info.Moduls.Contains("Internal/Chat/InternalAlerts.cs"))
+                Info.Moduls.Add("Internal/Chat/InternalAlerts.cs");
             Events.Add(Name,new EventHandler<InternalAlertEventArgs>(AletFunction));
         }
         public static void UnRegister(string User)
