@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System;
+using BDLib.BDLibInfo;
 
 namespace BDLib.Resorces
 {
@@ -18,10 +19,10 @@ namespace BDLib.Resorces
  
         public static void INIT()
         {
+            if (!Info.Moduls.Contains("Resorces/ResorceManager.cs"))
+                Info.Moduls.Add("Resorces/ResorceManager.cs");
+
             Resorces = new Dictionary<string, Resorce>();
-
-
-
         }
 
         public static Resorce GetResorce(string ResorceName)
