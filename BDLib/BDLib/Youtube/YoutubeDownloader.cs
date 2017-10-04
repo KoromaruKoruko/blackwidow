@@ -1,5 +1,6 @@
 ﻿using VideoLibrary;
 using System.IO;
+using BDLib.BDLibInfo;
 
 namespace BDLib.Youtube
 {
@@ -10,6 +11,8 @@ namespace BDLib.Youtube
 
         public static void INIT()
         {
+            if (!Info.Moduls.Contains("Youtube/YoutubeDownloader.cs"))
+                Info.Moduls.Add("Youtube/YoutubeDownloader.cs");
             YT = YouTube.Default;
         }
 

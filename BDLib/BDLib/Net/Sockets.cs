@@ -26,17 +26,6 @@ namespace BDLib.Net
                 return null;
             }
         }
-        public static Socket BlackNet
-        {
-            get
-            {
-                if (Socket.OSSupportsIPv4)
-                    return IPv4.Sockets.BlackNet;
-                if (Socket.OSSupportsIPv6)
-                    return IPv4.Sockets.BlackNet;
-                return null;
-            }
-        }
     }
 }
 namespace BDLib.Net.IPv4
@@ -51,10 +40,6 @@ namespace BDLib.Net.IPv4
         {
             get { return new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp); }
         }
-        public static Socket BlackNet
-        {
-            get { return new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IP); }
-        }
     }
 }
 namespace BDLib.Net.IPv6
@@ -68,10 +53,6 @@ namespace BDLib.Net.IPv6
         public static Socket Udp
         {
             get { return new Socket(AddressFamily.InterNetworkV6, SocketType.Dgram, ProtocolType.Udp); }
-        }
-        public static Socket BlackNet
-        {
-            get { return new Socket(AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.IP); }
         }
     }
 }

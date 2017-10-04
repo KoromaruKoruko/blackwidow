@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using BDLib.Text;
 using System.Text;
+using BDLib.BDLibInfo;
 
 namespace BDLib.Net.Http
 {
@@ -124,9 +125,10 @@ namespace BDLib.Net.Http
                 throw new InvalidOperationException("CODE FAILURE Class='Net\\Http\\HttpServer' Function='OnConnectionEvent' ErrorType='ValueIsNULL and should never be NULL when Function is CALLED' Please Message the dev team becouse this is a very important problem");
         }
 
-
         public HttpServer()
         {
+            if (!Info.Moduls.Contains("Net/Http/HttpServer.cs"))
+                Info.Moduls.Add("Net/Http/HttpServer.cs");
 
             Lis = new TcpListener[2];//one on 80 and one on 8080
 
@@ -203,9 +205,9 @@ namespace BDLib.Net.Http
                     output+= Res.Headers[x]+"\r\n";
 
             output += $"Date: {DateTime.Today.ToShortDateString()} - {DateTime.Now.ToShortTimeString()}\r\n"+
-                      $"Server: BDServer\r\n"+
+                      "Server: BDServer\r\n"+
                       $"Content-Length: {Res.Data.Length}\r\n"+
-                      $"Connection: Closed\r\n"+
+                      "Connection: Closed\r\n"+
                       $"Content-Type: {Res.DataType}\r\n";
 
 
@@ -513,7 +515,6 @@ namespace BDLib.Net.Http
             THR = null;
             Lis = null;
         }
-
 
         //gets/sets, add/remove
         public event HttpConAcceptEvent OnRequest { add     { RequestEvent += value; RequestEvents++; }

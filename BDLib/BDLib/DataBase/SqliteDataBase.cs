@@ -2,13 +2,16 @@
 using System.IO;
 using BDLib.Text;
 using System.Data.SQLite;
-
+using BDLib.BDLibInfo;
 namespace BDLib.DataBase
 {
     public class SQLite
     {
         public static bool Create(string Path)
         {
+            if (!Info.Moduls.Contains("DataBase/SqliteDataBase.cs"))
+                Info.Moduls.Add("DataBase/SqliteDataBase.cs");
+
             if (StringHelpers.IsWhiteSpaceOrNull(Path))
             {
                 throw new ArgumentNullException("$Path can't be white space or null");
@@ -53,6 +56,9 @@ namespace BDLib.DataBase
 
         public SQLite(string Path)
         {
+            if (!Info.Moduls.Contains("DataBase/SqliteDataBase.cs"))
+                Info.Moduls.Add("DataBase/SqliteDataBase.cs");
+
             if (StringHelpers.IsWhiteSpaceOrNull(Path))
             {
                 throw new ArgumentNullException("$Path can't be white space or null");

@@ -3,6 +3,7 @@ using System.Text;
 using System.Net.Sockets;
 using System.Net;
 using System.Threading;
+using BDLib.BDLibInfo;
 
 namespace BDLib.Net
 {
@@ -71,6 +72,9 @@ namespace BDLib.Net
         //Constructor
         public TcpClientAsync()
         {
+            if (!Info.Moduls.Contains("Net/TcpClientAsync.cs"))
+                Info.Moduls.Add("Net/TcpClientAsync.cs");
+
             _Soc = AutoSocket.Tcp;
             _MyEncoding = Encoding.ASCII;
             _ReturnStringOnly = false;
@@ -80,6 +84,9 @@ namespace BDLib.Net
         }
         public TcpClientAsync(Encoding MyEncoding)
         {
+            if (!Info.Moduls.Contains("Net/TcpClientAsync.cs"))
+                Info.Moduls.Add("Net/TcpClientAsync.cs");
+
             _Soc = AutoSocket.Tcp;
             this._MyEncoding = MyEncoding;
             _ReturnStringOnly = false;
@@ -89,6 +96,9 @@ namespace BDLib.Net
         }
         public TcpClientAsync(bool ReturnStringOnly)
         {
+            if (!Info.Moduls.Contains("Net/TcpClientAsync.cs"))
+                Info.Moduls.Add("Net/TcpClientAsync.cs");
+
             _Soc = AutoSocket.Tcp;
             _MyEncoding = Encoding.ASCII;
             this._ReturnStringOnly = ReturnStringOnly;
@@ -98,6 +108,9 @@ namespace BDLib.Net
         }
         public TcpClientAsync(Encoding MyEncoding, bool ReturnStringOnly)
         {
+            if (!Info.Moduls.Contains("Net/TcpClientAsync.cs"))
+                Info.Moduls.Add("Net/TcpClientAsync.cs");
+
             _Soc = AutoSocket.Tcp;
             this._MyEncoding = MyEncoding;
             this._ReturnStringOnly = ReturnStringOnly;
