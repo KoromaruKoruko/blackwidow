@@ -16,7 +16,7 @@ namespace BDLib.Text
             if (!StringHelpers.IsWhiteSpaceOrNull(OutputFolder) && !Directory.Exists(OutputFolder))
                 Directory.CreateDirectory(OutputFolder);
 
-            _LOG = new StreamWriter(new FileStream($"{OutputFolder}{DateTime.Today.ToShortDateString()}-{DateTime.Now.ToShortTimeString().Replace(":",".")}-{LogName}.BDLog", FileMode.Create));
+            _LOG = new StreamWriter(new FileStream($"{OutputFolder}//{DateTime.Today.ToShortDateString()}-{DateTime.Now.ToShortTimeString().Replace(":",".")}-{LogName}.BDLog", FileMode.Create));
             _LogLevel = LogLevel;
             _LogActive = true;
             _OutputToConsole = OutputToConsole;
