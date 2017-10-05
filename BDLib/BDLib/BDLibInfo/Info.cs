@@ -16,14 +16,14 @@ namespace BDLib.BDLibInfo
             "DataBase/SqliteDataBase.cs - v1.5",
             "DataTypes/S_Int.cs - v1",//new version/better of DynamicInt biggest number is 2,147,483,647 digits large IE int.MaxValue bytes so ye be cairfull with ram
             //^^ is broken so comming soon
-	    "Internal/Chat/InternalAlerts.cs - v1.3",
+			"Internal/Chat/InternalAlerts.cs - v1.3",
             "Internal/Chat/InternalChat.cs - v1.1",
             "Internal/CommandLine/DynamicCMD.cs - v2.5",
             "Internal/DataStream/DataStream.cs - v1.4",
             "Internal/DataStream/TwoWayDataStream.cs - v1.2",
             //"Net/Http/HttpServer.cs - PreRelase Build", working version comming soon
             "Net/Ssh/SSHClient.cs - v1",
-	    "Net/BDSocket.cs - v1",
+            "Net/BDSocket.cs - v1.3",
             "Net/Sockets.cs - v1.1",
             "Net/TcpClientAsync.cs -v1.1",
             "NeuralNetworks/Learning/BackProb.cs - v1.1",
