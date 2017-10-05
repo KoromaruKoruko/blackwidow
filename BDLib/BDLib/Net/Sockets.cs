@@ -1,4 +1,5 @@
-﻿using System.Net.Sockets;
+﻿using System.Net;
+using System.Net.Sockets;
 
 namespace BDLib.Net
 {
@@ -25,6 +26,13 @@ namespace BDLib.Net
                     return IPv4.Sockets.Udp;
                 return null;
             }
+        }
+    }
+    public static class IPInfo
+    {
+        public static string GetIPV4RemoteIpAddress()
+        {
+            return (new WebClient()).DownloadString("ipv4.icanhazip.com");
         }
     }
 }
