@@ -174,65 +174,34 @@ namespace BDLib.DataTypes
 
         public static S_Int operator +(S_Int a, S_Int b)
         {
-            if (a > b)
-                return comb(a, b);
-            if (b > a)
-                return comb(b, a);
-            if (a == b)
-                return a*2;
-
-            throw new Exception("Imposibal!!!!!!! a and b arnt eqwal and one isnt larger then the other");
+            return comb(a, b);
         }
+
         public static S_Int operator -(S_Int a, S_Int b)
         {
-            if (a > b)
-                return part(a, b);
-            if (b > a)
-                return part(b, a);
-            if (a == b)
-                return new S_Int();
-            throw new Exception("Imposibal!!!!!!! a and b arnt eqwal and one isnt larger then the other");
+            return part(a, b);
         }
+
         public static S_Int operator +(S_Int a, int b)
         {
-            if (a > b)
-                return comb(a, Parse(b));
-            if (b > a)
-                return comb(Parse(b), a);
-            if (a == b)
-                return a*2;
-            throw new Exception("Imposibal!!!!!!! a and b arnt eqwal and one isnt larger then the other");
+            return comb(a, Parse(b));
         }
+
         public static S_Int operator -(S_Int a, int b)
         {
-            if (a > b)
-                return part(a, Parse(b));
-            if (b > a)
-                return part(Parse(b), a);
-            if (a == b)
-                return new S_Int();
-            throw new Exception("Imposibal!!!!!!! a and b arnt eqwal and one isnt larger then the other");
+            return part(a, Parse(b));
         }
+
         public static S_Int operator +(int b, S_Int a)
         {
-            if (a > b)
-                return comb(a, Parse(b));
-            if (b > a)
-                return comb(Parse(b), a);
-            if (a == b)
-                return a * 2;
-            throw new Exception("Imposibal!!!!!!! a and b arnt eqwal and one isnt larger then the other");
+            return comb(a, Parse(b));
         }
+
         public static S_Int operator -(int b, S_Int a)
         {
-            if (a > b)
-                return part(a, Parse(b));
-            if (b > a)
-                return part(Parse(b), a);
-            if (a == b)
-                return new S_Int();
-            throw new Exception("Imposibal!!!!!!! a and b arnt eqwal and one isnt larger then the other");
+            return part(a, Parse(b));
         }
+
         private static S_Int comb(S_Int a, S_Int b)
         {
             int carry = 0;
