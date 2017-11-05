@@ -16,7 +16,7 @@ namespace BDLib.Net
         BDCryptoV1 = 2,
         BDCryptoV2 = 3,
     }
-    public class BDSocket
+    public class BDSocket : BDSocketBase
     {
         public Encoding EnCoder;
         private EncryptionType CT;
@@ -69,6 +69,10 @@ namespace BDLib.Net
         public int Available
         {
             get { return Soc.Available; }
+        }
+        public bool Connected
+        {
+            get { return Soc.Connected; }
         }
 
         public BDSocket(string Password, EncryptionType Crypto, int BDv2Complexity = 10)

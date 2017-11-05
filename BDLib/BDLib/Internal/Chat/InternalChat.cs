@@ -8,6 +8,10 @@ namespace BDLib.Internal.Chat
     {
         private static List<EventHandler<InternalChatEventArgs>> Events = new List<EventHandler<InternalChatEventArgs>>();
 
+        /// <summary>
+        /// adds event function to event list
+        /// </summary>
+        /// <param name="ReturnFunction">event function</param>
         public static void Join(Action<object,InternalChatEventArgs> ReturnFunction)
         {
             if (!Info.Moduls.Contains("Internal/Chat/InternalChat.cs"))
@@ -15,6 +19,10 @@ namespace BDLib.Internal.Chat
 
             Events.Add(new EventHandler<InternalChatEventArgs>(ReturnFunction));
         }
+        /// <summary>
+        /// removes event function from event list
+        /// </summary>
+        /// <param name="ReturnFunction">event function</param>
         public static void Part(Action<object,InternalChatEventArgs> ReturnFunction)
         {
             EventHandler<InternalChatEventArgs> TMP = new EventHandler<InternalChatEventArgs>(ReturnFunction);
@@ -23,6 +31,12 @@ namespace BDLib.Internal.Chat
                 Events.Remove(new EventHandler<InternalChatEventArgs>(ReturnFunction));
         }
 
+        /// <summary>
+        /// sends a message to the chat
+        /// </summary>
+        /// <param name="message">the message that needs to be sent</param>
+        /// <param name="sender">the sender name</param>
+        /// <returns>the amount of ppl that heard</returns>
         private static int Send(string message, string sender)
         {
             InternalChatEventArgs e = new InternalChatEventArgs()

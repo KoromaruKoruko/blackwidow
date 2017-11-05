@@ -8,7 +8,10 @@ namespace BDLib.Internal.DataStream
         private static Dictionary<UInt32, TwoWayStream> Streams = new Dictionary<uint, TwoWayStream>();
         private static Random IDGEN = new Random();
 
-
+        /// <summary>
+        /// Creates a TwoWayStream for internal cons
+        /// </summary>
+        /// <returns>the TwoWayStream Info</returns>
         public static TwoWayStreamInfo RegisterStream()
         {
             if (!BDLibInfo.Info.Moduls.Contains("Internal/DataStream/TwoWayDataStream.cs"))
@@ -46,11 +49,20 @@ namespace BDLib.Internal.DataStream
             }
             return uint_ID;
         }
+        /// <summary>
+        /// removes the TwoWayStream
+        /// </summary>
+        /// <param name="ID">the StreamID</param>
         public static void UnRegisterStream(UInt32 ID)
         {
             Streams.Remove(ID);
         }
 
+        /// <summary>
+        /// look to see if the Stream is still there
+        /// </summary>
+        /// <param name="ID">StreamID</param>
+        /// <returns>if it Exists</returns>
         public static bool Exists(UInt32 ID)
         {
             try
@@ -64,6 +76,12 @@ namespace BDLib.Internal.DataStream
             }
         }
 
+        /// <summary>
+        /// returns 1byte of data from the stream 
+        /// </summary>
+        /// <param name="StreamID">StreamID</param>
+        /// <param name="PointID">PT1/PT2</param>
+        /// <returns>the data</returns>
         public static byte ReadFrom(UInt32 StreamID, UInt32 PointID)
         {
             if (PointID == Streams[StreamID].PT1)
@@ -76,6 +94,12 @@ namespace BDLib.Internal.DataStream
             }
             else return 0;
         }
+        /// <summary>
+        /// writes to the stream
+        /// </summary>
+        /// <param name="StreamID">Stream ID</param>
+        /// <param name="PointID">PT1/PT2</param>
+        /// <param name="Data">the data to write</param>
         public static void WriteTo(UInt32 StreamID, UInt32 PointID,  byte Data)
         {
             if (PointID == Streams[StreamID].PT1)
@@ -88,6 +112,13 @@ namespace BDLib.Internal.DataStream
             }
         }
 
+        /// <summary>
+        /// Reads x amount from stream if x goes over it just returns the data read
+        /// </summary>
+        /// <param name="StreamID">StreamID</param>
+        /// <param name="PointID">PT1/PT2</param>
+        /// <param name="Amount">the amount to read</param>
+        /// <returns>the data</returns>
         public static byte[] ReadFrom(UInt32 StreamID, UInt32 PointID, int Amount)
         {
             if (PointID == Streams[StreamID].PT1)
@@ -106,6 +137,12 @@ namespace BDLib.Internal.DataStream
             }
             else return null;
         }
+        /// <summary>
+        /// writes data to the stream
+        /// </summary>
+        /// <param name="StreamID">Stream ID</param>
+        /// <param name="PointID">PT1/PT2</param>
+        /// <param name="Data">Data to Write</param>
         public static void WriteTo(UInt32 StreamID, UInt32 PointID, byte[] Data)
         {
             if (PointID == Streams[StreamID].PT1)

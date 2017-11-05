@@ -10,7 +10,7 @@ namespace BDLib.Crypto
 {
     public class BDCryptoV2
     {
-        private byte[] Instructions;
+        public byte[] Instructions { private get; set; }
         public BDCryptoV2(string Password, int Complexaty)
         {
             if (!Info.Moduls.Contains("Crypto/BDCryptoV2.cs"))
@@ -414,6 +414,5 @@ namespace BDLib.Crypto
             return buffer;
         }
         public uint Layers { get; set; }
-        //public Encoding ENCODING { get; set; }
     }
 }

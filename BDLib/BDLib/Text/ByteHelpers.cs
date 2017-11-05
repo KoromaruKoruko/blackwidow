@@ -8,6 +8,10 @@ namespace BDLib.Text
 {
     public static class ByteHelpers
     {
+        /// <summary>
+        /// put a byte into the Index and it returns the next byte
+        /// it also returns to 0 at 255
+        /// </summary>
         public static readonly byte[] ByteStepUpTranslator = new byte[256]
             {   1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
             30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
@@ -19,7 +23,11 @@ namespace BDLib.Text
             177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198,
             199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
             221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242,
-            243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 0 };//steps one byte up     (with out the missing number of using %)
+            243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 0 };
+        /// <summary>
+        /// put a byte into the Index and it returns the last byte
+        /// it also returns to 255 at 0
+        /// </summary>
         public static readonly byte[] ByteStepDownTranslator = new byte[256]
             {  255, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
             30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57,
@@ -31,7 +39,10 @@ namespace BDLib.Text
             177, 178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198,
             199, 200, 201, 202, 203, 204, 205, 206, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220,
             221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 238, 239, 240, 241, 242,
-            243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254 };//steps one byte down (with out the missing number of using %)
+            243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254 };
+        /// <summary>
+        /// returns the reverse of the byte enterd
+        /// </summary>
         public static byte[] BitRevercer = new byte[]
         {
             0x00, 0x80, 0x40, 0xc0, 0x20, 0xa0, 0x60, 0xe0,
@@ -68,7 +79,12 @@ namespace BDLib.Text
             0x1f, 0x9f, 0x5f, 0xdf, 0x3f, 0xbf, 0x7f, 0xff
         };
 
-
+        /// <summary>
+        /// return if items in A and B are the same
+        /// </summary>
+        /// <param name="a">byte array A</param>
+        /// <param name="b">byte array B</param>
+        /// <returns>if items in A and B are the same</returns>
         public static bool AreTheSame(byte[] a, byte[] b)
         {
             bool output = true;

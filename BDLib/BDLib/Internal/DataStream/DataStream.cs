@@ -9,7 +9,10 @@ namespace BDLib.Internal.DataStream
         private static Dictionary<UInt32,DataStreamInfo> Streams;
         private static Random IDGEN = new Random();
 
-
+        /// <summary>
+        /// creates a OneWay DataStream
+        /// </summary>
+        /// <returns>the stream ID</returns>
         public static UInt32 RegisterStream()
         {
             if (!Info.Moduls.Contains("Internal/DataStream/DataStream.cs"))
@@ -42,11 +45,20 @@ namespace BDLib.Internal.DataStream
             }
             return uint_ID;
         }
+        /// <summary>
+        /// removes a DataStream
+        /// </summary>
+        /// <param name="ID">Stream ID</param>
         public static void UnRegisterStream(UInt32 ID)
         {
             Streams.Remove(ID);
         }
 
+        /// <summary>
+        /// checks if a DataStream Exists
+        /// </summary>
+        /// <param name="ID">Stream ID</param>
+        /// <returns>if ID Exists</returns>
         public static bool Exists(UInt32 ID)
         {
             try
@@ -60,14 +72,30 @@ namespace BDLib.Internal.DataStream
             }
         }
 
+        /// <summary>
+        /// reads one byte form the DataStream
+        /// </summary>
+        /// <param name="StreamID">Stream ID</param>
+        /// <returns>Data</returns>
         public static byte ReadFrom(UInt32 StreamID)
         {
             return Streams[StreamID].Data.Dequeue();
         }
+        /// <summary>
+        /// Writes onebyte to the DataStream
+        /// </summary>
+        /// <param name="StreamID">Stream ID</param>
+        /// <param name="Data">Byte to Write</param>
         public static void WriteTo(UInt32 StreamID,byte Data)
         {
             Streams[StreamID].Data.Enqueue(Data);
         }
+        /// <summary>
+        /// reads x amount from Stream
+        /// </summary>
+        /// <param name="StreamID">Stream ID</param>
+        /// <param name="Amount">Amout to read</param>
+        /// <returns>DATA</returns>
         public static byte[] ReadFrom(UInt32 StreamID,int Amount)
         {
             byte[] output = new byte[Amount];
@@ -75,6 +103,11 @@ namespace BDLib.Internal.DataStream
                 output[x] = Streams[StreamID].Data.Dequeue();
             return output;
         }
+        /// <summary>
+        /// Writes to the DataStream
+        /// </summary>
+        /// <param name="StreamID">Stream ID</param>
+        /// <param name="Data">Data to Write</param>
         public static void WriteTo(UInt32 StreamID, byte[] Data)
         {
             for(int x = 0; x < Data.Length; x++)

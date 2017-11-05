@@ -3,56 +3,76 @@ using BDLib.BDLibInfo;
 
 namespace BDLib.DataTypes
 {
-
+    //TODO make it usable in the Negatives
+    //TODO ln 175
     public class S_Int
     {
+        /// <summary>
+        /// Info only helpfull to the User
+        /// </summary>
         public static class Usermessages
         {
             public const string MaxValue = "the max value is a number with 2,147,483,647 digits so ye knock your self out";
             public const string MinValue = "the max value is a number with 2,147,483,647 digits so ye knock your self out";
         }
-        public const S_Int Empty = null;
+        
         private char[] Data = new char[] { '0' };
 
+        /// <summary>
+        /// Create a S_Int,
+        /// with value 0
+        /// </summary>
         public S_Int()
         {
             if (!Info.Moduls.Contains("DataTypes/S_Int.cs"))
                 Info.Moduls.Add("DataTypes/S_Int.cs");
         } //do nothing
+        /// <summary>
+        /// Create a S_Int,
+        /// with value x
+        /// </summary>
         public S_Int(short x)
         {
             if (!Info.Moduls.Contains("DataTypes/S_Int.cs"))
                 Info.Moduls.Add("DataTypes/S_Int.cs");
             Data = x.ToString().ToCharArray();
         }
+        /// <summary>
+        /// Create a S_Int,
+        /// with value x
+        /// </summary>
         public S_Int(int x)
         {
             if (!Info.Moduls.Contains("DataTypes/S_Int.cs"))
                 Info.Moduls.Add("DataTypes/S_Int.cs");
             Data = x.ToString().ToCharArray();
         }
+        /// <summary>
+        /// Create a S_Int,
+        /// with value x
+        /// </summary>
         public S_Int(long x)
         {
             if (!Info.Moduls.Contains("DataTypes/S_Int.cs"))
                 Info.Moduls.Add("DataTypes/S_Int.cs");
             Data = x.ToString().ToCharArray();
         }
-
-        public void add(int x)
-        {
-            Data = (this + x).Data;//cheep add to self
-        }
+        
+        /// <summary>
+        /// adds x to me
+        /// </summary>
+        /// <param name="x">Value</param>
         public void add(S_Int x)
         {
-            Data = (this + x).Data;//cheep add to self
+            Data = comb(this, x).Data;
         }
-        public void minus(int x)
-        {
-            Data = (this - x).Data;//cheep add to self
-        }
+        /// <summary>
+        /// Takes x away from me
+        /// </summary>
+        /// <param name="x">Value</param>
         public void minus(S_Int x)
         {
-            Data = (this - x).Data;//cheep add to self
+            Data = part(this, x).Data;
         }
 
         public static S_Int Parse(byte x)
@@ -126,7 +146,7 @@ namespace BDLib.DataTypes
             return o;
 
         } //#
-
+        
         public override string ToString()
         {
             string output = "";
@@ -136,26 +156,51 @@ namespace BDLib.DataTypes
             return output;
         }
 
+        /// <summary>
+        /// same as 'me == x'
+        /// </summary>
+        /// <param name="x">Value</param>
+        /// <returns>if the same</returns>
         public bool Equals(S_Int x)
         {
            Data = x.Data;
            return true;
         }
+        /// <summary>
+        /// same as 'me == x'
+        /// </summary>
+        /// <param name="x">Value</param>
+        /// <returns>if the same</returns>
         public bool Equals(byte x)
         {
             Data = x.ToString().ToCharArray();
             return true;
         }
+        /// <summary>
+        /// same as 'me == x'
+        /// </summary>
+        /// <param name="x">Value</param>
+        /// <returns>if the same</returns>
         public bool Equals(short x)
         {
             Data = x.ToString().ToCharArray();
             return true;
         }
+        /// <summary>
+        /// same as 'me == x'
+        /// </summary>
+        /// <param name="x">Value</param>
+        /// <returns>if the same</returns>
         public bool Equals(int x)
         {
             Data = x.ToString().ToCharArray();
             return true;
         }
+        /// <summary>
+        /// same as 'me == x'
+        /// </summary>
+        /// <param name="x">Value</param>
+        /// <returns>if the same</returns>
         public bool Equals(long x)
         {
             Data = x.ToString().ToCharArray();
@@ -171,6 +216,12 @@ namespace BDLib.DataTypes
             return base.Equals(obj);
         }//remove green marker (i hate it)
 
+
+        //TODO Create non operator Calculation Functions
+        //due to StackOverFlowException
+        //witch happens when an operation (triggerd by an operator)
+        //does too much stuff to where the CPU STACK runs out of space
+        //in CPU chache
 
         public static S_Int operator +(S_Int a, S_Int b)
         {
@@ -201,7 +252,13 @@ namespace BDLib.DataTypes
         {
             return part(a, Parse(b));
         }
-
+        
+        /// <summary>
+        /// adds A and B together
+        /// </summary>
+        /// <param name="a">Value A</param>
+        /// <param name="b">Value B</param>
+        /// <returns>the result of A and B</returns>
         private static S_Int comb(S_Int a, S_Int b)
         {
             int carry = 0;
@@ -239,6 +296,12 @@ namespace BDLib.DataTypes
             o.Data = output.Replace("*","").ToCharArray();
             return o;
         }
+        /// <summary>
+        /// takes B away from A
+        /// </summary>
+        /// <param name="a">Value A</param>
+        /// <param name="b">Value B</param>
+        /// <returns>the remender of A-B</returns>
         private static S_Int part(S_Int a, S_Int b)
         {
             short carry = 0;

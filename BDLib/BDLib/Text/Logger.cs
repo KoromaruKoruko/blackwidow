@@ -11,6 +11,13 @@ namespace BDLib.Text
         private static int _TimeLength = 0;
         private static bool _OutputToConsole;
 
+        /// <summary>
+        /// initulizes the logger for use
+        /// </summary>
+        /// <param name="LogName">name of log file</param>
+        /// <param name="LogLevel">severity to log at</param>
+        /// <param name="OutputToConsole">if i should output to the STD:OUT as well</param>
+        /// <param name="OutputFolder">Output Folder for the log file</param>
         public static void INIT(string LogName, LogType LogLevel,bool OutputToConsole = false, string OutputFolder = "")
         {
             if (!StringHelpers.IsWhiteSpaceOrNull(OutputFolder) && !Directory.Exists(OutputFolder))
@@ -21,6 +28,9 @@ namespace BDLib.Text
             _LogActive = true;
             _OutputToConsole = OutputToConsole;
         }
+        /// <summary>
+        /// ends the logging secion and uninitulizes the logger
+        /// </summary>
         public static void EndLog()
         {
             _LogActive = false;
@@ -29,6 +39,11 @@ namespace BDLib.Text
             _TimeLength = 0;
         }
 
+        /// <summary>
+        /// logs the message
+        /// </summary>
+        /// <param name="message">message to log</param>
+        /// <param name="Type">severity</param>
         public static void Log(string message, LogType Type)
         {
             if (FORMAT_Verify_LogType(Type) && _LogActive)
@@ -39,6 +54,13 @@ namespace BDLib.Text
                 _LOG.WriteLine(m);
             }
         }
+        /// <summary>
+        /// logs the message with some sublines
+        /// sublines are for extra debugging info
+        /// </summary>
+        /// <param name="message">message to log</param>
+        /// <param name="SubLines">the extra info</param>
+        /// <param name="Type">severity</param>
         public static void LogWithSubLines(string message, string[] SubLines, LogType Type)
         {
             if(FORMAT_Verify_LogType(Type) && _LogActive)

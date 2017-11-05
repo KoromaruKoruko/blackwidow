@@ -4,26 +4,31 @@ namespace BDLib.BDLibInfo
 {
     public static class Info
     {
-        public const string Version = "1.2 Beta Release";
+        public const string Version = "1.3 Release";
         private static readonly string[] Items = new string[]
         {
             "BDLibInfo/Info.cs - <Static Indexer has no version>",
             "Crypto/Hash/OneKeyHasher.cs - v1.10",
             "Crypto/Hash/BDFileCheckSum.cs - v1",
+            "Crypto/KeyPad/BDKeyPadBase.cs - v1",
+            "Crypto/KeyPad/BDKeyPadV1.cs - v1",
+            "Crypto/Mobile/MobileKeyHasher.cs - v1",
             "Crypto/AES.cs - v1.1",
+            "Crypto/BDKeyGen.cs - v1",
             "Crypto/BDCrypto.cs - v2.4",
             "Crypto/BDCryptoV2.cs - v1.3",
             "DataBase/SqliteDataBase.cs - v1.5",
-            "DataTypes/S_Int.cs - v1",//new version/better of DynamicInt biggest number is 2,147,483,647 digits large IE int.MaxValue bytes so ye be cairfull with ram
-            //^^ is broken so comming soon
+            "DataTypes/S_Int.cs - v1.1",
+            //^^ not compleate
 			"Internal/Chat/InternalAlerts.cs - v1.3",
             "Internal/Chat/InternalChat.cs - v1.1",
             "Internal/CommandLine/DynamicCMD.cs - v2.5",
             "Internal/DataStream/DataStream.cs - v1.4",
             "Internal/DataStream/TwoWayDataStream.cs - v1.2",
-            //"Net/Http/HttpServer.cs - PreRelase Build", working version comming soon
             "Net/Ssh/SSHClient.cs - v1",
+            "Net/BDSocketBase.cs - v1",
             "Net/BDSocket.cs - v1.3",
+            "Net/BDSocketV2.cs - v1", 
             "Net/Sockets.cs - v1.1",
             "Net/TcpClientAsync.cs -v1.1",
             "NeuralNetworks/Learning/BackProb.cs - v1.1",
@@ -45,13 +50,13 @@ namespace BDLib.BDLibInfo
             "AForge.Genetic - v2.2.5",
             "AForge.Math - v2.2.5",
             "AForge.Neuro - v2.2.5",
-            "EntityFrameWork - v6.0.0",
-            "System.Data.SQLite - v1.0.105.2",
-            "System.Data.SQLite.Core - v1.0.105.2",
-            "System.Data.SQLite.EF6 - v1.0.105.2",
-            "System.Data.SQLite.Linq - v1.0.105.2",
+            "EntityFrameWork - v6.2.0",
+            "System.Data.SQLite - v1.0.106",
+            "System.Data.SQLite.Core - v1.0.106",
+            "System.Data.SQLite.EF6 - v1.0.106",
+            "System.Data.SQLite.Linq - v1.0.106",
             "VideoLibrary - v1.3.5",
-            "SSH.Net - v2016.0.0"
+            "SSH.Net - v2016.1.0"
         };
         public const string SourcePage = "https://github.com/dedady157/blackwidow/tree/master/BDLib/BDLib";
 

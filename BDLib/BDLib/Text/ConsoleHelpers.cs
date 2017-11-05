@@ -5,6 +5,10 @@ namespace BDLib.Text
 {
     public static class ConsoleHelpers
     {
+        /// <summary>
+        /// all ConsoleColors in string format
+        /// incase you need to list them somewhere
+        /// </summary>
         public static readonly string[] ConsoleColors = new string[]
         {
             "Black", "Blue", "Cyan", "DarkBlue", "DarkCyan",
@@ -13,6 +17,12 @@ namespace BDLib.Text
             "White", "Yellow"
         };
 
+        /// <summary>
+        /// converts color name 'string' to ConsoleColor
+        /// for user input IDK
+        /// </summary>
+        /// <param name="color">color name</param>
+        /// <returns>ConsoleColor based on color</returns>
         public static ConsoleColor Str2CC(string color)
         {
             switch (color.ToLower())
@@ -66,6 +76,12 @@ namespace BDLib.Text
                     throw new ArgumentException("no translation");
             }
         }
+        /// <summary>
+        /// converts ConsoleColor to string
+        /// for configfiles IDK
+        /// </summary>
+        /// <param name="x">ConsoleColor</param>
+        /// <returns>string name based on x</returns>
         public static string CC2Str(ConsoleColor x)
         {
             switch (x)
