@@ -582,7 +582,7 @@ namespace Advdupe
                     switch (b [ index - 1 ])
                     {
                         case 0:
-                        return null;
+                        return new AdvDupeObject("");
 
                         case 255:
                         return getTable(b, ref index, dupe);
