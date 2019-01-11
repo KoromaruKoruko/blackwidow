@@ -54,72 +54,75 @@ namespace Advdupe2ToE2HoloCode
                 }
             }
             Entity [ ] dupe = GetEntities(new Dupe(args [ 0 ]));
-            StreamWriter SW = new StreamWriter(File.OpenWrite(args [ 1 ]));
-            void Write(String line)
+            using (StreamWriter SW = new StreamWriter(File.OpenWrite(args [ 1 ])))
             {
-                if (PrintOutput)
-                    Console.WriteLine(line);
-                SW.WriteLine(line);
-            }
-            Int32 HOLOSPAWNSTAGE = 1;
-            void WriteEnt(String Base, Entity Ent)
-            {
-                Write($"{Base}holoCreate({HOLOSPAWNSTAGE}, HOLOPOSITION+vec({Ent.Pos}), vec(1,1,1), ang({Ent.Angle}))");
-                Write($"{Base}holoModel({HOLOSPAWNSTAGE}, \"{Ent.Model}\")");
-                if (Ent.HasMaterial)
-                    Write($"{Base}holoMaterial({HOLOSPAWNSTAGE}, \"{Ent.Material}\")");
-                if (Ent.HasColorAndEffects)
+                void Write(String line)
                 {
-                    Write($"{Base}holoColor({HOLOSPAWNSTAGE}, vec4({Ent.Color.Value}))");
-                    if (Ent.RenderFX.Value != 0)
-                        Write($"{Base}holoRenderFX({HOLOSPAWNSTAGE}, {Ent.RenderFX.Value})");
+                    if (PrintOutput)
+                        Console.WriteLine(line);
+                    SW.WriteLine(line);
                 }
-            }
-            if (!Pure)
-            {
-                Write("@persist HOLOSPAWNSTAGE:number HOLOPOSITION:vector");
-                Write("# holo spawn script made using 'Advdupe2ToE2HoloCode'");
-                Write("# made by SomeGuyOnTheWeb aka Koromaru");
-                Write("# mode:startup_script");
-                Write("if(first()|HOLOSPAWNSTAGE)");
-                Write("{");
-                Write("    switch(HOLOSPAWNSTAGE)");
-                Write("    {");
-                Write("        case 0,");
-                Write("            HOLOSPAWNSTAGE=1");
-                Write("            HOLOPOSITION=entity():pos()");
-                Write("            runOnTick(1)");
-                Write("            break");
-                Write("");
-                foreach (Entity Ent in dupe)
+                Int32 HOLOSPAWNSTAGE = 1;
+                void WriteEnt(String Base, Entity Ent)
                 {
-                    Write($"        case {HOLOSPAWNSTAGE},");
-                    WriteEnt("            ", Ent);
-                    HOLOSPAWNSTAGE++;
-                    Write("            HOLOSPAWNSTAGE=" + HOLOSPAWNSTAGE);
+                    if (Ent.HasColorAndEffects)
+                    {
+                        Write($"{Base}holoCreate({HOLOSPAWNSTAGE}, HOLOPOSITION+vec({Ent.Pos}), vec(1,1,1), ang({Ent.Angle}), vec({Ent.Color.Value.R},{Ent.Color.Value.G},{Ent.Color.Value.B}), \"{Ent.Model})\"):setAlpha({Ent.Color.Value.A})");
+
+                        if (Ent.RenderFX.Value != 0)
+                            Write($"{Base}holoRenderFX({HOLOSPAWNSTAGE}, {Ent.RenderFX.Value})");
+                    }
+                    else
+                        Write($"{Base}holoCreate({HOLOSPAWNSTAGE}, HOLOPOSITION+vec({Ent.Pos}), vec(1,1,1), ang({Ent.Angle}), vec(255), \"{Ent.Model}\")");
+                    if (Ent.HasMaterial)
+                        Write($"{Base}holoMaterial({HOLOSPAWNSTAGE}, \"{Ent.Material}\")");
+                }
+                if (!Pure)
+                {
+                    Write("@persist HOLOSPAWNSTAGE:number HOLOPOSITION:vector");
+                    Write("# holo spawn script made using 'Advdupe2ToE2HoloCode'");
+                    Write("# made by SomeGuyOnTheWeb aka Koromaru");
+                    Write("# mode:startup_script");
+                    Write("if(first()|HOLOSPAWNSTAGE)");
+                    Write("{");
+                    Write("    switch(HOLOSPAWNSTAGE)");
+                    Write("    {");
+                    Write("        case 0,");
+                    Write("            HOLOSPAWNSTAGE=1");
+                    Write("            HOLOPOSITION=entity():pos()");
+                    Write("            runOnTick(1)");
+                    Write("            break");
+                    Write("");
+                    foreach (Entity Ent in dupe)
+                    {
+                        Write($"        case {HOLOSPAWNSTAGE},");
+                        WriteEnt("            ", Ent);
+                        HOLOSPAWNSTAGE++;
+                        Write("            HOLOSPAWNSTAGE=" + HOLOSPAWNSTAGE);
+                        Write("            exit()");
+                        Write("");
+                    }
+                    Write("        default,");
+                    Write("            HOLOSPAWNSTAGE=0");
+                    Write("            runOnTick(0)");
                     Write("            exit()");
-                    Write("");
+                    Write("    }");
+                    Write("}");
                 }
-                Write("        default,");
-                Write("            HOLOSPAWNSTAGE=0");
-                Write("            runOnTick(0)");
-                Write("            exit()");
-                Write("    }");
-                Write("}");
-                SW.Flush();
-                SW.Close();
-            }
-            else
-            {
-                Write("# holo spawn script made using 'Advdupe2ToE2HoloCode'");
-                Write("# made by SomeGuyOnTheWeb aka Koromaru");
-                Write("# mode:pure");
-                foreach (Entity Ent in dupe)
+                else
                 {
-                    WriteEnt("", Ent);
-                    HOLOSPAWNSTAGE++;
-                    Write("");
+                    Write("@persist HOLOPOSITION:vector");
+                    Write("# holo spawn script made using 'Advdupe2ToE2HoloCode'");
+                    Write("# made by SomeGuyOnTheWeb aka Koromaru");
+                    Write("# mode:pure");
+                    foreach (Entity Ent in dupe)
+                    {
+                        WriteEnt("", Ent);
+                        HOLOSPAWNSTAGE++;
+                        Write("");
+                    }
                 }
+                SW.Flush();
             }
         }
         private static Entity [ ] GetEntities(Dupe dupe)
