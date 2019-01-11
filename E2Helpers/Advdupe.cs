@@ -28,7 +28,7 @@ namespace Advdupe
         private Boolean? _TypeBoolean;
         private Double? _TypeDouble;
         private String _TypeString;
-
+        
         public Vector TypeVec
         {
             get
@@ -470,10 +470,16 @@ namespace Advdupe
                 this.RefrancedObjects = new AdvDupeObject [ 0 ];
                 switch (this.Info.Revision)
                 {
+                    case 3:
+                    AdvancedDupeRevisions.Revision3.DeSerilize(FSTM, this);
+                    break;
+
                     case 4:
-                    {
-                        AdvancedDupeRevisions.Revision4.DeSerilize(FSTM, this);
-                    }
+                    AdvancedDupeRevisions.Revision4.DeSerilize(FSTM, this);
+                    break;
+
+                    case 5:
+                    AdvancedDupeRevisions.Revision5.DeSerilize(FSTM, this);
                     break;
 
                     default:
@@ -484,22 +490,30 @@ namespace Advdupe
         private static class AdvancedDupeRevisions
         {
             public const Byte Revision = 5;
-            private static class Revision0
+            public static class Revision1
             {
                 public static Dupe DeSerilize(FileStream FSTM) => throw new NotImplementedException();
             }
-            private static class Revision1
+            public static class Revision2
             {
                 public static Dupe DeSerilize(FileStream FSTM) => throw new NotImplementedException();
             }
-            private static class Revision2
+            public static class Revision3
             {
-                public static Dupe DeSerilize(FileStream FSTM) => throw new NotImplementedException();
-            }
-            private static class Revision3
-            {
-                public static Dupe DeSerilize(FileStream FSTM) => throw new NotImplementedException();
-            }
+                public static void DeSerilize(FileStream FSTM, Dupe dupe)
+                {
+                    string RawData = Encoding.Default.GetString(DeCompress(FSTM));
+                    Int32 Index = 0;
+                    RawData = RawData.Replace("\r\r\n\t\r\n", "\t\t\t\t");
+                    RawData = RawData.Replace("\r\n\t\n", "\t\t\t\t");
+                    RawData = RawData.Replace("\r\n", "\n");
+                    RawData = RawData.Replace("\t\t\t\t", "\r\n\t\n");
+                    AdvDupeObject Obj = Revision4.Read(Encoding.Default.GetBytes(RawData), ref Index, dupe);
+                    if (Obj.Type != AdvDupeObjectType.Table)
+                        throw new DataMalFormedException("Dupe.AdvancedDupeRevisions.Revision3.DeSerilize(FileStream,Dupe)");
+                    dupe.DupeData = Obj.TypeTable;
+                }
+            }// COMPLEATE!
             public static class Revision4
             {
                 public static void DeSerilize(FileStream FSTM, Dupe dupe)
@@ -511,7 +525,58 @@ namespace Advdupe
                         throw new DataMalFormedException("Dupe.AdvancedDupeRevisions.Revision4.DeSerilize(FileStream,Dupe)");
                     dupe.DupeData = Obj.TypeTable;
                 }
-                private static AdvDupeObject Read(Byte [ ] b, ref Int32 index, Dupe dupe)
+                public static AdvDupeObject Read(Byte [ ] b, ref Int32 index, Dupe dupe)
+                {
+                    index++;
+                    switch (b [ index - 1 ])
+                    {
+                        case 0:
+                        return null;
+
+                        case 255:
+                        return Revision5.getTable(b, ref index, dupe);
+
+                        case 254:
+                        return Revision5.getArray(b, ref index, dupe);
+
+                        case 253:
+                        return Revision5.getBooleanT(b, ref index);
+
+                        case 252:
+                        return Revision5.getBooleanF(b, ref index);
+
+                        case 251:
+                        return Revision5.getDouble(b, ref index);
+
+                        case 250:
+                        return Revision5.getVector(b, ref index);
+
+                        case 249:
+                        return Revision5.GetAngle(b, ref index);
+
+                        case 248:
+                        return Revision5.GetString(b, ref index);
+
+                        case 247:
+                        return Revision5.GetTableRef(b, ref index, dupe);
+
+                        default:
+                        return Revision5.GetUndef(b, ref index);
+                    }
+                }
+            }// COMPLEATE!
+            public static class Revision5
+            {
+                public static void DeSerilize(FileStream FSTM, Dupe dupe)
+                {
+                    Byte [ ] RawData = DeCompress(FSTM);
+                    Int32 Index = 0;
+                    AdvDupeObject Obj = Read(RawData, ref Index, dupe);
+                    if (Obj.Type != AdvDupeObjectType.Table)
+                        throw new DataMalFormedException("Dupe.AdvancedDupeRevisions.Revision5.DeSerilize(FileStream,Dupe)");
+                    dupe.DupeData = Obj.TypeTable;
+                }
+                public static AdvDupeObject Read(Byte [ ] b, ref Int32 index, Dupe dupe)
                 {
                     index++;
                     switch (b [ index - 1 ])
@@ -546,11 +611,14 @@ namespace Advdupe
                         case 247:
                         return GetTableRef(b, ref index, dupe);
 
+                        case 246:
+                        return GetNull(b, ref index);
+
                         default:
                         return GetUndef(b, ref index);
                     }
                 }
-                private static AdvDupeObject getTable(Byte [ ] b, ref Int32 index, Dupe dupe)
+                public static AdvDupeObject getTable(Byte [ ] b, ref Int32 index, Dupe dupe)
                 {
                     AdvDupeObject t = new AdvDupeObject(new Table());
                     Object Key = null;
@@ -565,7 +633,7 @@ namespace Advdupe
                     dupe.RefrancedObjects [ Size ] = t;
                     return new AdvDupeObject(new AdvDupeRefrence(dupe.RefrancedObjects [ Size ]));
                 }//255
-                private static AdvDupeObject getArray(Byte [ ] b, ref Int32 index, Dupe dupe)
+                public static AdvDupeObject getArray(Byte [ ] b, ref Int32 index, Dupe dupe)
                 {
                     AdvDupeObject a = new AdvDupeObject(new AdvDupeObject [ 0 ]);
                     AdvDupeObject Var = null;
@@ -584,15 +652,15 @@ namespace Advdupe
                     dupe.RefrancedObjects [ Size ] = a;
                     return new AdvDupeObject(new AdvDupeRefrence(dupe.RefrancedObjects [ Size ]));
                 }// 254
-                private static AdvDupeObject getBooleanT(Byte [ ] b, ref Int32 index) => new AdvDupeObject(true);// 253
-                private static AdvDupeObject getBooleanF(Byte [ ] b, ref Int32 index) => new AdvDupeObject(false);// 252
-                private static AdvDupeObject getDouble(Byte [ ] b, ref Int32 index)
+                public static AdvDupeObject getBooleanT(Byte [ ] b, ref Int32 index) => new AdvDupeObject(true);// 253
+                public static AdvDupeObject getBooleanF(Byte [ ] b, ref Int32 index) => new AdvDupeObject(false);// 252
+                public static AdvDupeObject getDouble(Byte [ ] b, ref Int32 index)
                 {
                     AdvDupeObject outp = new AdvDupeObject(BitConverter.ToDouble(b, index));
                     index += 8;
                     return outp;
                 }// 251
-                private static AdvDupeObject getVector(Byte [ ] b, ref Int32 index)
+                public static AdvDupeObject getVector(Byte [ ] b, ref Int32 index)
                 {
                     Double X = BitConverter.ToDouble(b, index);
                     index += 8;
@@ -603,7 +671,7 @@ namespace Advdupe
 
                     return new AdvDupeObject(new Vector(X, Y, Z));
                 }// 250
-                private static AdvDupeObject GetAngle(Byte [ ] b, ref Int32 index)
+                public static AdvDupeObject GetAngle(Byte [ ] b, ref Int32 index)
                 {
                     Double Pitch = BitConverter.ToDouble(b, index);
                     index += 8;
@@ -614,7 +682,7 @@ namespace Advdupe
 
                     return new AdvDupeObject(new Angle(Pitch, Yaw, Roll));
                 }// 249
-                private static AdvDupeObject GetString(Byte [ ] b, ref Int32 index)
+                public static AdvDupeObject GetString(Byte [ ] b, ref Int32 index)
                 {
                     AdvDupeObject outp = new AdvDupeObject("");
                     while (true)
@@ -627,14 +695,15 @@ namespace Advdupe
                     index++;
                     return outp;
                 }// 248
-                private static AdvDupeObject GetTableRef(Byte [ ] b, ref Int32 index, Dupe dupe)
+                public static AdvDupeObject GetTableRef(Byte [ ] b, ref Int32 index, Dupe dupe)
                 {
                     Int16 Id = BitConverter.ToInt16(b, index);
                     index += sizeof(Int16);
 
                     return new AdvDupeObject(new AdvDupeRefrence(dupe.RefrancedObjects [ Id ]));
                 } // 247
-                private static AdvDupeObject GetUndef(Byte [ ] b, ref Int32 index)
+                public static AdvDupeObject GetNull(Byte[] b, ref Int32 index) => new AdvDupeObject(); // 246
+                public static AdvDupeObject GetUndef(Byte [ ] b, ref Int32 index)
                 {
                     Byte [ ] buffer = new Byte [ b [ index - 1 ] ];
                     Array.Copy(b, index, buffer, 0, buffer.Length);
@@ -643,12 +712,8 @@ namespace Advdupe
                     foreach (Byte bu in buffer)
                         Var.TypeString += (Char)bu;
                     return Var;
-                }//0 - 246
+                }//0 - 245
             }// COMPLEATE!
-            private static class Revision5
-            {
-                public static void DeSerilize(FileStream FSTM, ref Dupe dupe) => throw new NotImplementedException();
-            }
             public static Byte [ ] DeCompress(FileStream FSTM)
             {
                 try
@@ -1000,5 +1065,4 @@ namespace Advdupe
         }
     }
     #endregion
-
 }
