@@ -29,7 +29,6 @@ namespace Advdupe
         private Double? _TypeDouble;
         private String _TypeString;
 
-#warning untested auto refrance resolving here!
         public Vector TypeVec
         {
             get
@@ -222,9 +221,7 @@ namespace Advdupe
         }
 
         private readonly AdvDupeRefrence _Ref;
-
-#warning TODO: make non generic Constructors
-
+        
         public AdvDupeObject(Object BaseObj = null)
         {
             if (BaseObj is null)
@@ -349,9 +346,7 @@ namespace Advdupe
         public override String ToString() => this.GetRaw().ToString();
         public override Boolean Equals(Object obj) => this.GetRaw().Equals(obj);
         public override Int32 GetHashCode() => this.GetRaw().GetHashCode();
-
-#warning TODO: work on operators
-
+        
         public static Boolean operator ==(AdvDupeObject left, AdvDupeObject right)
         {
             if (right is null)
