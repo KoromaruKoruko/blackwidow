@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Advdupe;
@@ -10,7 +9,7 @@ namespace Advdupe2ToE2HoloCode
     {
         public struct Color
         {
-            public Byte R, G, B, A;
+            public Double R, G, B, A;
             public override String ToString() => $"{this.R}, {this.G}, {this.B}, {this.A}";
         }
         private struct Entity
@@ -20,36 +19,47 @@ namespace Advdupe2ToE2HoloCode
             public String Model;
             public Boolean HasColorAndEffects;
             public Color? Color;
-            public Int32? RenderFX;
+            public Double? RenderFX;
             public Boolean HasMaterial;
             public String Material;
         }
         private static void Main(String [ ] args)
         {
+            args = new string [ ]
+            {
+                @"C:\Program Files (x86)\Steam\steamapps\common\GarrysMod\garrysmod\data\advdupe2\bank.txt",
+                @"output.txt",
+                @"-p"
+            };
             if (args.Length < 2)
             {
-                Console.WriteLine("usage:" + Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().FullName) + " <InputPath> <OutputPath> [-p (prints output to console)]");
+                Console.WriteLine("usage:" + Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().FullName) + " <InputPath> <OutputPath> [-cp (prints output to console)] [-p (purify code)]");
                 Environment.Exit(13); // WinCode :: The data is invalid.
             }
             Boolean PrintOutput = false;
+            Boolean Pure = false;
             if (args.Length > 2)
             {
                 for (Int32 x = 2; x < args.Length; x++)
                 {
                     switch (args [ 2 ])
                     {
-                        case "-p":
+                        case "-cp":
                         PrintOutput = true;
                         break;
 
+                        case "-p":
+                        Pure = true;
+                        break;
+
                         default:
-                        Console.WriteLine("usage:" + Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().FullName) + " <InputPath> <OutputPath> [-p (prints output to console)]");
+                        Console.WriteLine("usage:" + Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().FullName) + " <InputPath> <OutputPath> [-cp (prints output to console)] [-p (purify code)]");
                         Environment.Exit(13); // WinCode :: The data is invalid.
                         break;
                     }
                 }
             }
-            Entity [ ] dupe = GetEntities(GetDupe(args [ 0 ]));
+            Entity [ ] dupe = GetEntities(new Dupe(args [ 0 ]));
             StreamWriter SW = new StreamWriter(File.OpenWrite(args [ 1 ]));
             void Write(String line)
             {
@@ -58,145 +68,104 @@ namespace Advdupe2ToE2HoloCode
                 SW.WriteLine(line);
             }
             Int32 HOLOSPAWNSTAGE = 1;
-            Write("@persist HOLOSPAWNSTAGE:number HOLOPOSITION:vector");
-            Write("# holo spawn script made using 'Advdupe2ToE2HoloCode'");
-            Write("# made by SomeGuyOnTheWeb aka Koromaru");
-            Write("if(first()|HOLOSPAWNSTAGE)");
-            Write("{");
-            Write("    switch(HOLOSPAWNSTAGE)");
-            Write("    {");
-            Write("        case 0,");
-            Write("            HOLOSPAWNSTAGE=1");
-            Write("            HOLOPOSITION=entity():pos()");
-            Write("            runOnTick(1)");
-            Write("            break");
-            Write("");
-            foreach (Entity Ent in dupe)
+            void WriteEnt(String Base, Entity Ent)
             {
-                Write($"       case {HOLOSPAWNSTAGE},");
-                Write($"           holoCreate({HOLOSPAWNSTAGE}, HOLOPOSITION+vec({Ent.Pos}), vec(1,1,1), ang({Ent.Angle}))");
-                Write($"           holoModel({HOLOSPAWNSTAGE}, \"{Ent.Model}\")");
+                Write($"{Base}holoCreate({HOLOSPAWNSTAGE}, HOLOPOSITION+vec({Ent.Pos}), vec(1,1,1), ang({Ent.Angle}))");
+                Write($"{Base}holoModel({HOLOSPAWNSTAGE}, \"{Ent.Model}\")");
                 if (Ent.HasMaterial)
-                    Write($"           holoMaterial({HOLOSPAWNSTAGE}, \"{Ent.Material}\")");
+                    Write($"{Base}holoMaterial({HOLOSPAWNSTAGE}, \"{Ent.Material}\")");
                 if (Ent.HasColorAndEffects)
                 {
-                    Write($"           holoColor({HOLOSPAWNSTAGE}, vec4({Ent.Color.Value}))");
+                    Write($"{Base}holoColor({HOLOSPAWNSTAGE}, vec4({Ent.Color.Value}))");
                     if (Ent.RenderFX.Value != 0)
-                        Write($"           holoRenderFX({HOLOSPAWNSTAGE}, {Ent.RenderFX.Value})");
+                        Write($"{Base}holoRenderFX({HOLOSPAWNSTAGE}, {Ent.RenderFX.Value})");
                 }
-                HOLOSPAWNSTAGE++;
-                Write("           HOLOSPAWNSTAGE=" + HOLOSPAWNSTAGE);
-                Write("           exit()");
+            }
+            if (!Pure)
+            {
+                Write("@persist HOLOSPAWNSTAGE:number HOLOPOSITION:vector");
+                Write("# holo spawn script made using 'Advdupe2ToE2HoloCode'");
+                Write("# made by SomeGuyOnTheWeb aka Koromaru");
+                Write("# mode:startup_script");
+                Write("if(first()|HOLOSPAWNSTAGE)");
+                Write("{");
+                Write("    switch(HOLOSPAWNSTAGE)");
+                Write("    {");
+                Write("        case 0,");
+                Write("            HOLOSPAWNSTAGE=1");
+                Write("            HOLOPOSITION=entity():pos()");
+                Write("            runOnTick(1)");
+                Write("            break");
                 Write("");
-            }
-            Write("       default,");
-            Write("           HOLOSPAWNSTAGE=0");
-            Write("           runOnTick(0)");
-            Write("           exit()");
-            Write("    }");
-            Write("}");
-            SW.Flush();
-            SW.Close();
-        }
-        private static Dupe GetDupe(String InputFile)
-        {
-            FileStream FFile = null;
-            try
-            {
-                FFile = File.OpenRead(InputFile);
-            }
-            catch
-            {
-                Console.WriteLine("Unable to read file!");
-                Environment.Exit(110); // WinCode :: The system cannot open the device or file specified.
-            }
-            Dupe? tmpdupe = null;
-            Byte [ ] Header = new Byte [ 5 ];
-            FFile.Read(Header, 0, 5);
-            Byte Revision = Header [ 4 ];
-            if (Header [ 0 ] == 'A' && Header [ 1 ] == 'D' && Header [ 2 ] == '2' && Header [ 3 ] == 'F') // advanced dupe 2
-            {
-                if (Revision > AdvancedDupe.Revision)
+                foreach (Entity Ent in dupe)
                 {
-                    Console.WriteLine($"UnSupported AdvDupe Revision! ({Revision} > {AdvancedDupe.Revision}), file cant be decoded!");
-                    Environment.Exit(13824); // WinCode :: Invalid header.
+                    Write($"        case {HOLOSPAWNSTAGE},");
+                    WriteEnt("            ", Ent);
+                    HOLOSPAWNSTAGE++;
+                    Write("            HOLOSPAWNSTAGE=" + HOLOSPAWNSTAGE);
+                    Write("            exit()");
+                    Write("");
                 }
-                else if (Revision < 1)
-                {
-                    Console.WriteLine($"Invalid AdvDupe Revision! ({Revision}), file cant be decoded!");
-                    Environment.Exit(13824); // WinCode :: Invalid header.
-                }
-                // load based on revision
-                tmpdupe = AdvancedDupe.GetDupe(FFile, Revision);
-            }
-            else if (Header [ 0 ] == '[' && Header [ 1 ] == 'I' && Header [ 2 ] == 'n' && Header [ 3 ] == 'f') // advanced dupe 1
-            {
-                tmpdupe = AdvancedDupe.GetDupe(FFile, 0);
+                Write("        default,");
+                Write("            HOLOSPAWNSTAGE=0");
+                Write("            runOnTick(0)");
+                Write("            exit()");
+                Write("    }");
+                Write("}");
+                SW.Flush();
+                SW.Close();
             }
             else
             {
-                Console.WriteLine("Not AdvDupe File!");
-                Environment.Exit(13824); // WinCode :: Invalid header.
-            }
-
-            if (tmpdupe.HasValue)
-            {
-                if (tmpdupe.Value.Success)
+                Write("# holo spawn script made using 'Advdupe2ToE2HoloCode'");
+                Write("# made by SomeGuyOnTheWeb aka Koromaru");
+                Write("# mode:pure");
+                foreach (Entity Ent in dupe)
                 {
-                    return tmpdupe.Value;
-                }
-                else
-                {
-                    Console.WriteLine("Unknown Error while getting raw dupe!");
-                    Environment.Exit(13816);// WinCode :: Unknown error occurred
+                    WriteEnt("", Ent);
+                    HOLOSPAWNSTAGE++;
+                    Write("");
                 }
             }
-            else
-            {
-                Console.WriteLine("Unknown Error while getting raw dupe! (dupe==null)");
-                Environment.Exit(13816);// WinCode :: Unknown error occurred
-            }
-#pragma warning disable CS0618 // Type or member is obsolete
-            throw new ExecutionEngineException("this should never be thrown!");
-#pragma warning restore CS0618 // Type or member is obsolete
         }
         private static Entity [ ] GetEntities(Dupe dupe)
         {
-            Dictionary<String, Object> Entities = (Dictionary<String, Object>)((Dictionary<String, Object>)dupe.MainItem.Data) [ "Entities" ];
+            Table Entities = dupe.DupeData [ "Entities" ].TypeTable;
             Entity [ ] outp = new Entity [ Entities.Count ];
             Int32 i = 0;
 
-            foreach (Object Ent in Entities.Values)
+            foreach (AdvDupeObject Ent in Entities.Values)
             {
                 Entity NewEnt = new Entity();
-                Dictionary<String, Object> EntData = (Dictionary<String, Object>)Ent;
-                Dictionary<String, Object> PropDataPhysics = ((Dictionary<String, Object>)((Dictionary<String, Object>)EntData [ "PhysicsObjects" ]) [ "0" ]);
-                NewEnt.Pos = (Vector)PropDataPhysics [ "Pos" ];
-                NewEnt.Angle = (Angle)PropDataPhysics [ "Angle" ];
-                NewEnt.Model = (String)EntData [ "Model" ];
-                if (EntData.ContainsKey("EntityMods"))
+                Table EntData = Ent.TypeTable;
+                Table PropDataPhysics = EntData [ "PhysicsObjects" ].TypeTable [ "0" ].TypeTable;
+                NewEnt.Pos = PropDataPhysics [ "Pos" ].TypeVec;
+                NewEnt.Angle = PropDataPhysics [ "Angle" ].TypeAng;
+                NewEnt.Model = EntData [ "Model" ].TypeString;
+                Table Mods = EntData [ "EntityMods" ].TypeTable;
+                if (Mods != null)
                 {
-                    Dictionary<String, Object> Mods = (Dictionary<String, Object>)EntData [ "EntityMods" ];
-                    if (Mods.ContainsKey("colour"))
+                    Table colour = Mods [ "colour" ].TypeTable;
+                    if (colour != null)
                     {
                         NewEnt.HasColorAndEffects = true;
-                        Dictionary<String, Object> colour = (Dictionary<String, Object>)Mods [ "colour" ];
-                        NewEnt.RenderFX = (Int32)(Double)colour [ "RenderFX" ];
+                        NewEnt.RenderFX = colour [ "RenderFX" ].TypeDouble;
                         // Render mode is ignored due to not being implamentable
-                        Dictionary<String, Object> Colour = (Dictionary<String, Object>)colour [ "Color" ];
+                        Table Colour = colour [ "Color" ].TypeTable;
                         NewEnt.Color = new Color()
                         {
-                            R = (Byte)(Double)Colour [ "r" ],
-                            G = (Byte)(Double)Colour [ "g" ],
-                            B = (Byte)(Double)Colour [ "b" ],
-                            A = (Byte)(Double)Colour [ "a" ],
+                            R = Colour [ "r" ].TypeDouble ?? 0,
+                            G = Colour [ "g" ].TypeDouble ?? 0,
+                            B = Colour [ "b" ].TypeDouble ?? 0,
+                            A = Colour [ "a" ].TypeDouble ?? 0,
                         };
                     }
-                    if (Mods.ContainsKey("material"))
+
+                    Table material = Mods [ "material" ].TypeTable;
+                    if (material != null)
                     {
-                        Dictionary<String, Object> material = (Dictionary<String, Object>)Mods [ "material" ];
                         NewEnt.HasMaterial = true;
-                        NewEnt.Material = (String)material [ "MaterialOverride" ];
+                        NewEnt.Material = material [ "MaterialOverride" ].TypeString;
                         if (String.IsNullOrWhiteSpace(NewEnt.Material))
                         {
                             NewEnt.HasMaterial = false;
