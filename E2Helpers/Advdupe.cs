@@ -410,8 +410,7 @@ namespace Advdupe
                     if (buffer [ 0 ] == 'A' && buffer [ 1 ] == 'D' && buffer [ 2 ] == '2' && buffer [ 3 ] == 'F')
                         this.Info.Revision = buffer [ 4 ];
                     else if (buffer [ 0 ] == '[' && buffer [ 1 ] == 'I' && buffer [ 2 ] == 'n' && buffer [ 3 ] == 'f')
-#warning unknown outcome HERE!
-                        this.Info.Revision = 0 | buffer [ 4 ];
+                        throw new AdvancedDupeRevisionNotSupported("Dupe Dupe.c_tor(String)");
                     else
                         throw new FileNotDupeFileException("Dupe Dupe.c_tor(String)");
                 } // validate magic number
@@ -1065,4 +1064,5 @@ namespace Advdupe
         }
     }
     #endregion
+    
 }
