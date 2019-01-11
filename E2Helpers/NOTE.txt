@@ -1,2 +1,2 @@
 Advdupe.cs 
-  only works on Advdupe2 Revision 4, will work on other Revisions soon
+  only works on Advdupe2 Revisions (3-5), will work but Advdupe Revisions (1-2) wont, i cant for the life of me fully understand whats going on there and if i cant understand it i cant translate it. if you want to make it yourself please by all means commit it and if it works ill add it in!
