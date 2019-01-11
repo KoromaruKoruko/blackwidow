@@ -25,12 +25,6 @@ namespace Advdupe2ToE2HoloCode
         }
         private static void Main(String [ ] args)
         {
-            args = new string [ ]
-            {
-                @"C:\Program Files (x86)\Steam\steamapps\common\GarrysMod\garrysmod\data\advdupe2\bank.txt",
-                @"output.txt",
-                @"-p"
-            };
             if (args.Length < 2)
             {
                 Console.WriteLine("usage:" + Path.GetFileNameWithoutExtension(Assembly.GetEntryAssembly().FullName) + " <InputPath> <OutputPath> [-cp (prints output to console)] [-p (purify code)]");
